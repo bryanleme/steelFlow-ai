@@ -1,41 +1,45 @@
 # Post para LinkedIn
 
-O melhor resultado deste projeto foi o que ele se recusou a maquiar.
+O modelo não bateu a meta.
 
-Na manufatura, dados podem ser abundantes e a decisão continuar retrospectiva. Mix,
-desgaste e parâmetros interagem, tornando uma média agregada perigosamente convincente.
+E esse foi um dos resultados mais importantes do projeto.
 
-Construí o SteelFlow AI para responder uma pergunta menos vistosa — e mais útil:
-como demonstrar um produto de dados industrial sem transformar uma simulação em uma
-promessa de produção?
+Construí o **SteelFlow AI** para testar uma ideia simples:
 
-O MVP percorre a cadeia completa: dados Parquet, DuckDB, features point-in-time,
-modelos temporais com incerteza calibrada, SHAP, cenários restritos, **5 páginas**
-<!-- [claim:STREAMLIT_PAGES] --> em Streamlit e Power BI.
+> Um sistema de apoio à decisão também precisa saber quando não deve recomendar.
 
-No perfil de portfólio, o pipeline processou **12.594.517** registros públicos
-<!-- [claim:MVP_PUBLIC_ROWS] -->. O laboratório publicou **12 cenários**
+Na prática, ele faz três coisas:
+
+1. **Prevê** resultados e mostra uma faixa de incerteza.
+2. **Explica** quais fatores influenciaram a estimativa.
+3. **Recusa** cenários fora dos limites conhecidos.
+
+O teste mais importante foi direto:
+
+- meta de melhoria do TBH: **5%** <!-- [claim:TBH_ENGINEERING_TARGET] -->;
+- resultado estimado: **0,98%** <!-- [claim:TBH_RELATIVE_IMPROVEMENT] -->.
+
+A meta não foi atingida — e o produto deixa isso visível.
+
+Por trás dessa experiência existem **12.594.517** registros públicos
+<!-- [claim:MVP_PUBLIC_ROWS] -->, **12 cenários**
 <!-- [claim:PUBLISHED_SCENARIOS] --> aprovados pelas **9 restrições**
-<!-- [claim:HARD_CONSTRAINTS] --> e pela barreira de distribuição.
+<!-- [claim:HARD_CONSTRAINTS] --> e **5 páginas**
+<!-- [claim:STREAMLIT_PAGES] --> que conduzem da análise à revisão da decisão.
 
-O resultado de que mais gosto é o que eu não tentei esconder: a meta de melhoria de
-TBH era **5%** <!-- [claim:TBH_ENGINEERING_TARGET] -->, mas o modelo estimou apenas
-**0,98%** <!-- [claim:TBH_RELATIVE_IMPROVEMENT] --> contra a melhor baseline no teste
-cronológico. A meta não foi atingida — e o produto diz isso claramente.
+O ponto não é apenas ter um modelo.
 
-Isso é confiabilidade aplicada: previsão + incerteza + explicação + alternativas Pareto,
-com janela final intocada, calibração separada, recusa OOD, restrições duras,
-rastreabilidade dos números e decisão humana obrigatória.
+É combinar previsão, contexto, limites e responsabilidade humana no mesmo fluxo.
 
-Escopo essencial: conjunto **100% sintético**, protótipo offline e **sem controle de máquina**.
-O trabalho **não demonstra causalidade industrial**, não valida API 5CT e
-não alega ganho real. Ele demonstra arquitetura, disciplina experimental e potencial de
-apoio à decisão sob limites explícitos.
+Escopo importante: o conjunto é **100% sintético**, o protótipo funciona offline e está
+**sem controle de máquina**. O trabalho **não demonstra causalidade industrial**, não
+valida API 5CT e não promete ganho real de produção.
 
-O próximo passo não é ligar o MVP a uma linha. É obter dados autorizados, revisar o
-problema com especialistas, validar externamente em modo observacional e criar
-monitoramento e governança antes de qualquer piloto industrial.
+Se você trabalha com dados, ML ou manufatura, quero saber:
 
-Código, documentação e evidências: https://github.com/bryanleme/steelFlow-ai
+**o que um sistema precisa mostrar para conquistar sua confiança antes de recomendar uma decisão?**
 
-#DataEngineering #MachineLearning #MLOps #Manufacturing #DataScience #Portfolio
+Projeto, código e evidências:
+https://github.com/bryanleme/steelFlow-ai
+
+#DataEngineering #MachineLearning #MLOps #Manufacturing #DataScience

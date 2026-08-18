@@ -2,90 +2,88 @@
 
 Arquivo final para envio: `SteelFlow_AI_LinkedIn_Carousel.pptx`.
 
-Formato sugerido: 1080 × 1350 px, dez slides, leitura curta e um único argumento por
-tela. As notas de fonte podem ficar pequenas no rodapé.
+Formato: 1080 × 1350 px, nove slides e uma mensagem principal por tela.
 
-## Slide 1 — Um digital twin pode dizer “não sei”?
+## Slide 1 — Quando o modelo não sabe, ele para
 
 **SteelFlow AI**
 
-Um MVP de dados e ML industrial feito para estimar, restringir e recusar — não para
-prometer resultado de fábrica.
+Um projeto que prevê, explica e recusa cenários sem evidência suficiente.
 
-Rodapé: portfólio educacional, **100% sintético**.
+Rodapé: protótipo offline, dados **100% sintéticos**.
 
-## Slide 2 — O problema
+## Slide 2 — Mais dados não bastam para decidir
 
-Dados podem ser abundantes e a decisão continuar retrospectiva. Produtividade,
-qualidade, energia, manutenção, mix e desgaste se movem juntos.
+Mix, desgaste e tempo mudam o contexto.
 
-Sem separar tempo e contexto, correlação vira explicação e um dashboard vira falsa
-confiança.
+- o produto muda;
+- o ativo desgasta;
+- a média engana.
 
-## Slide 3 — A escala do experimento
+Antes de recomendar, o sistema precisa entender o contexto.
 
-O perfil MVP gerou **12.594.517** registros públicos
-<!-- [claim:MVP_PUBLIC_ROWS] -->, com Parquet particionado, IDs determinísticos,
-manifests e verdade causal isolada.
+## Slide 3 — Do dado à decisão em quatro passos
 
-Rodapé: escala sintética; não é volume de uma planta real.
+1. Gerar os dados.
+2. Preparar a análise.
+3. Prever e explicar.
+4. Testar e revisar.
 
-## Slide 4 — Da fonte ao produto
+Tudo sem usar informação do futuro.
 
-YAML → Parquet → DuckDB → snapshots point-in-time → modelos temporais → cenários →
-**5 páginas** <!-- [claim:STREAMLIT_PAGES] --> Streamlit + **13 tabelas**
-<!-- [claim:POWERBI_TABLES] --> Power BI.
+## Slide 4 — O modelo não bateu a meta
 
-## Slide 5 — Métrica sem maquiagem
+Meta: **5%** <!-- [claim:TBH_ENGINEERING_TARGET] -->.
 
-Meta de TBH: melhorar MAE em **5%** <!-- [claim:TBH_ENGINEERING_TARGET] --> contra a
-melhor baseline.
+Resultado: **0,98%** <!-- [claim:TBH_RELATIVE_IMPROVEMENT] -->.
 
-Resultado em teste cronológico: **0,98%** <!-- [claim:TBH_RELATIVE_IMPROVEMENT] -->.
+A meta não foi atingida. **Transparência também é resultado.**
 
-**A meta não foi atingida.** Um modelo complexo não ganha por decreto.
+## Slide 5 — Cada previsão vem com contexto
 
-## Slide 6 — Incerteza faz parte da resposta
+O sistema mostra valor esperado, faixa e confiança.
 
-Nos seis alvos contínuos, os intervalos P10–P90 tiveram cobertura empírica entre
-**77,39%** <!-- [claim:INTERVAL_COVERAGE_MIN] --> e **82,13%**
-<!-- [claim:INTERVAL_COVERAGE_MAX] --> no conjunto sintético.
+Não é só um número: é um número com contexto.
 
-Previsão pontual sem faixa não conta a história inteira.
+## Slide 6 — Quando não sabe, o sistema recusa
 
-## Slide 7 — Otimização com guardrails
+- **12 cenários** <!-- [claim:PUBLISHED_SCENARIOS] --> aprovados;
+- **9 restrições** <!-- [claim:HARD_CONSTRAINTS] --> obrigatórias;
+- **3 sondas OOD** <!-- [claim:OOD_PROBES] --> recusadas.
 
-O NSGA-II executou **20.160** avaliações <!-- [claim:NSGA_EVALUATIONS] --> e publicou
-**12 cenários** <!-- [claim:PUBLISHED_SCENARIOS] --> condicionais, sob **9 restrições**
-<!-- [claim:HARD_CONSTRAINTS] --> duras.
+Depois disso: comparar alternativas e pedir revisão humana.
 
-São estimativas em backtest, não receitas de processo.
+## Slide 7 — Uma trilha simples até a decisão
 
-## Slide 8 — Saber recusar é uma feature
+As **5 páginas** <!-- [claim:STREAMLIT_PAGES] --> conduzem por:
 
-As **3 sondas OOD** <!-- [claim:OOD_PROBES] --> foram bloqueadas e não receberam
-recomendação.
+visão geral → influência → previsão → cenário → confiabilidade.
 
-Fora do envelope histórico sintético, a resposta correta é: evidência insuficiente.
+## Slide 8 — Limites claros evitam promessas
 
-## Slide 9 — O que torna o case confiável
+- **não demonstra causalidade industrial**;
+- não valida conformidade API 5CT;
+- não promete ganho financeiro;
+- não controla equipamentos.
 
-- teste final consumido uma vez;
-- verdade causal fora do treino;
-- calibração em janela exclusiva;
-- hashes e contratos versionados;
-- aceite humano obrigatório;
-- **sem controle de máquina**.
+O protótipo permanece **sem controle de máquina**.
 
-## Slide 10 — O limite é parte do produto
+## Slide 9 — Quer explorar o projeto?
 
-SteelFlow AI **não demonstra causalidade industrial**, não valida API 5CT e não alega
-ganho real.
+Veja o código, os dados sintéticos, os testes e as telas.
 
-Ele mostra potencial de apoio à decisão, arquitetura ponta a ponta e honestidade sobre
-o que os dados permitem afirmar.
-
-Próximo passo: dados autorizados, revisão de processo, validação externa em modo
-observacional, monitoramento e governança antes de qualquer piloto.
+Teste o fluxo. Questione os limites. Compartilhe o que você melhoraria.
 
 github.com/bryanleme/steelFlow-ai
+
+## Notas de rastreabilidade — não entram nas telas
+
+- o perfil MVP processou **12.594.517** registros públicos
+  <!-- [claim:MVP_PUBLIC_ROWS] -->;
+- a cobertura P10–P90 observada ficou entre **77,39%**
+  <!-- [claim:INTERVAL_COVERAGE_MIN] --> e **82,13%**
+  <!-- [claim:INTERVAL_COVERAGE_MAX] --> nos seis alvos contínuos;
+- o otimizador executou **20.160** avaliações
+  <!-- [claim:NSGA_EVALUATIONS] -->;
+- o pacote Power BI contém **13 tabelas**
+  <!-- [claim:POWERBI_TABLES] --> verificadas.
