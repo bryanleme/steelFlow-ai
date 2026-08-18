@@ -15,7 +15,8 @@
 | Baselines obrigatórios | pipeline de baseline versionado | 5 | mediana/prior, condicionado, linear/logística e RF no mesmo teste final |
 | CatBoost, calibração e quantis | modelos, artefatos e avaliação | 5 | dez tarefas; Platt em quatro classificadores; MultiQuantile em seis regressões; 50/50 checks |
 | SHAP e explicabilidade | explicações globais, por segmento e cenário | 5 | 30 Parquets TreeSHAP, 218 recortes de métricas e dez cenários por tarefa |
-| NSGA-II com restrições | otimizador, envelopes e alternativas Pareto | 6 | property/constraint tests e recusa OOD |
+| NSGA-II com restrições | otimizador, envelopes e alternativas Pareto | 6 | 20.160 avaliações; 234 Pareto viáveis; 12/12 cenários seguros; 3/3 recusas OOD; 14/14 checks |
+| Cenários auditáveis e incerteza | contrato JSON e relatório de otimização | 6 | quatro perfis por contexto, P10/P50/P90, distância, restrições ativas e hash lógico repetido |
 | Streamlit com cinco páginas | `app/` e componentes | 7 | smoke test e fluxo de cenário |
 | Aprovação humana e ausência de controle | guardas de interface e avisos | 7 | teste de confirmação e inspeção visual |
 | Pacote Power BI | exports, relações, Power Query, tema, wireframe e DAX | 7 | checksums e validação de arquivos |

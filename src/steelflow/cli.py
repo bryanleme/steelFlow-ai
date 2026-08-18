@@ -29,7 +29,6 @@ from steelflow.validation.raw_data import validate_raw_dataset
 LOGGER = logging.getLogger("steelflow.cli")
 
 _FUTURE_COMMAND_PHASES = {
-    "optimize-demo": 6,
     "app": 7,
 }
 
@@ -122,6 +121,17 @@ def build_parser() -> argparse.ArgumentParser:
     )
     _add_profile_argument(evaluate_parser)
 
+    optimize_parser = subparsers.add_parser(
+        "optimize-demo",
+        help="Generate constrained NSGA-II scenarios with historical-envelope safeguards.",
+    )
+    _add_profile_argument(optimize_parser)
+    optimize_parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Replace only the deterministic optimization run for this exact contract.",
+    )
+
     for command, phase in _FUTURE_COMMAND_PHASES.items():
         future_parser = subparsers.add_parser(
             command,
@@ -162,6 +172,7 @@ def _doctor(project_root: Path | None, *, json_output: bool) -> int:
             "catboost",
             "sklearn",
             "shap",
+            "pymoo",
             "streamlit",
         )
     }
@@ -183,10 +194,12 @@ def _doctor(project_root: Path | None, *, json_output: bool) -> int:
         print(f"profiles: {', '.join(profile_results)}")
         print("scope: offline synthetic data; no machine control")
         missing_optional = [
-            package for package in ("duckdb", "catboost", "streamlit") if not packages[package]
+            package
+            for package in ("duckdb", "catboost", "pymoo", "streamlit")
+            if not packages[package]
         ]
         if missing_optional:
-            print(f"optional packages pending later phases: {', '.join(missing_optional)}")
+            print(f"optional packages not installed: {', '.join(missing_optional)}")
     return 0 if python_supported else 1
 
 
@@ -317,6 +330,33 @@ def _evaluate_models(profile: str, project_root: Path | None) -> int:
     return 0
 
 
+def _optimize_demo(profile: str, project_root: Path | None, *, force: bool) -> int:
+    from steelflow.optimization.pipeline import (
+        OptimizationPipelineError,
+        run_optimization_demo,
+    )
+
+    root = resolve_project_root(project_root)
+    bundle = load_config_bundle(profile, root)
+    try:
+        result = run_optimization_demo(
+            bundle,
+            project_root=root,
+            overwrite=force,
+        )
+    except OptimizationPipelineError as exc:
+        raise ValueError(str(exc)) from exc
+    print(
+        f"OK run_id={result.simulation_run_id} profile={profile} "
+        f"contexts={result.context_count} scenarios={result.scenario_count} "
+        f"reused={str(result.reused).lower()} logical_sha256={result.logical_sha256} "
+        f"elapsed_seconds={result.elapsed_seconds:.3f}"
+    )
+    print(f"optimization_path={result.optimization_root.relative_to(root)}")
+    print(f"optimization_manifest={result.manifest_path.relative_to(root)} status=PASS")
+    return 0
+
+
 def run(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -344,6 +384,8 @@ def run(argv: Sequence[str] | None = None) -> int:
             return _train_models(args.profile, args.project_root, force=args.force)
         if args.command == "evaluate":
             return _evaluate_models(args.profile, args.project_root)
+        if args.command == "optimize-demo":
+            return _optimize_demo(args.profile, args.project_root, force=args.force)
         if args.command in _FUTURE_COMMAND_PHASES:
             phase = _FUTURE_COMMAND_PHASES[args.command]
             print(

@@ -4,7 +4,7 @@
 
 Construir o SteelFlow AI como protótipo offline e reproduzível de apoio à decisão para uma fábrica fictícia de tubos OCTG sem costura. Todo dado será sintético; todos os limites, internos e simulados. O trabalho avança por checkpoints aprovados, sem iniciar a fase seguinte silenciosamente.
 
-**Status:** Fases 0–5 implementadas e validadas localmente em 2026-08-18; Fase 6 aguarda aprovação do Checkpoint 5.
+**Status:** Fases 0–6 implementadas e validadas localmente em 2026-08-18; Fase 7 aguarda aprovação do Checkpoint 6.
 
 ## Estado inicial auditado em 2026-08-18
 
@@ -85,6 +85,8 @@ Construir o SteelFlow AI como protótipo offline e reproduzível de apoio à dec
 3. Resultado contém atual, conservador, equilibrado e orientado a produtividade quando factíveis.
 4. Cada alternativa registra OOD/distância, restrições ativas, incerteza e principais fatores.
 
+**Evidência executada:** o `mvp` usou somente 11 controles elegíveis, manteve contexto e mediadores fixos e executou 20.160 avaliações NSGA-II. Três envelopes com 627, 778 e 844 linhas de suporte produziram 234 pontos Pareto viáveis. Foram publicados 12 cenários com 100% de aprovação nas nove restrições duras; 3/3 sondas OOD foram recusadas sem recomendação. A validação passou 14/14 checks e duas reconstruções completas repetiram o hash lógico `0bacb0178932…`.
+
 ### Fases 7–8
 
 1. As cinco páginas funcionam com consultas agregadas e cache consciente.
@@ -125,4 +127,4 @@ As dependências pesadas ficam em extras para que a fundação seja validável s
 
 ## Sequência imediata após aprovação
 
-Fase 6: construir envelopes condicionais somente com variáveis controláveis, detectar e recusar cenários OOD, implementar NSGA-II com restrições duras e publicar alternativas Pareto reproduzíveis. O otimizador deverá propagar incerteza dos modelos, manter aprovação humana e não ocultar as limitações observadas na Fase 5.
+Fase 7: construir as cinco páginas Streamlit, consumir somente os cenários validados, exigir confirmação humana, exportar JSON/CSV e concluir o pacote Power BI verificável sem declarar um `.pbix` inexistente.

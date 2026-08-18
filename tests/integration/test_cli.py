@@ -48,6 +48,7 @@ def test_help_smoke() -> None:
     assert "build-features" in result.stdout
     assert "train" in result.stdout
     assert "evaluate" in result.stdout
+    assert "optimize-demo" in result.stdout
 
 
 def test_all_configs_validate_from_cli() -> None:
@@ -86,7 +87,6 @@ def test_config_hash_is_a_sha256_digest() -> None:
 @pytest.mark.parametrize(
     ("command", "phase"),
     [
-        ("optimize-demo", 6),
         ("app", 7),
     ],
 )
@@ -96,3 +96,10 @@ def test_future_commands_fail_explicitly(command: str, phase: int) -> None:
     assert result.returncode == 2
     assert f"reserved for Phase {phase}" in result.stderr
     assert "not implemented" in result.stderr
+
+
+def test_optimize_demo_requires_frozen_upstream_artifacts() -> None:
+    result = run_cli("optimize-demo", "--profile", "test")
+
+    assert result.returncode == 1
+    assert "frozen Phase 5 training and evaluation are required" in result.stderr

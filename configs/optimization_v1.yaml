@@ -1,0 +1,54 @@
+schema_version: "1.0"
+optimization_version: "1.0.0"
+random_seed: 20260818
+snapshot: in_process_rolling
+context_columns: [product_code, grade_family, line_id, shift_id]
+conditioning_hierarchy:
+  - [product_code, grade_family, line_id, wear_band]
+  - [product_code, grade_family, line_id]
+  - [product_code, grade_family]
+  - [grade_family, line_id]
+envelope:
+  lower_quantile: 0.02
+  upper_quantile: 0.98
+  minimum_support: 150
+  nearest_neighbors: 5
+  distance_quantile: 0.95
+  distance_multiplier: 1.00
+  wear_band_edges: [0.0, 0.25, 0.50, 0.75, 1.01]
+surrogate:
+  iterations: 180
+  depth: 6
+  learning_rate: 0.06
+  early_stopping_rounds: 20
+nsga2:
+  population_size: 96
+  offspring: 96
+  generations: 70
+  alternatives: 4
+constraints:
+  max_quality_failure_probability: 0.25
+  max_downtime_probability: 0.30
+  max_expected_downtime_minutes: 20.0
+  max_throughput_interval_width: 8.0
+  max_energy_interval_width: 60.0
+  max_abs_outer_diameter_deviation_mm: 1.20
+  max_wall_eccentricity_pct: 3.50
+  max_ovality_pct: 2.50
+controllables:
+  reheat_zone_1_temp_c: {unit: degC, internal_min: 850.0, internal_max: 1320.0, max_change_fraction: 0.15}
+  reheat_zone_2_temp_c: {unit: degC, internal_min: 850.0, internal_max: 1320.0, max_change_fraction: 0.15}
+  reheat_zone_3_temp_c: {unit: degC, internal_min: 850.0, internal_max: 1320.0, max_change_fraction: 0.15}
+  soak_time_min: {unit: min, internal_min: 20.0, internal_max: 180.0, max_change_fraction: 0.15}
+  reheat_exit_temp_c: {unit: degC, internal_min: 850.0, internal_max: 1320.0, max_change_fraction: 0.15}
+  roll_speed_rpm: {unit: rpm, internal_min: 40.0, internal_max: 240.0, max_change_fraction: 0.15}
+  roll_gap_mm: {unit: mm, internal_min: 8.0, internal_max: 18.0, max_change_fraction: 0.12}
+  mandrel_position_mm: {unit: mm, internal_min: 1.5, internal_max: 5.0, max_change_fraction: 0.12}
+  reduction_rate_pct: {unit: pct, internal_min: 10.0, internal_max: 40.0, max_change_fraction: 0.12}
+  exit_speed_m_s: {unit: m_s, internal_min: 1.0, internal_max: 3.5, max_change_fraction: 0.12}
+  lubrication_flow_l_min: {unit: L_min, internal_min: 5.0, internal_max: 80.0, max_change_fraction: 0.15}
+demo:
+  contexts: 3
+  selection: one_supported_medoid_per_line
+  require_human_approval: true
+  scenario_language: estimated_scenario_in_synthetic_backtest

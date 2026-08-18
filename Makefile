@@ -3,7 +3,7 @@ PYTHON ?= python
 .PHONY: setup validate-config doctor generate-dev validate-data build-db diagnose build-features train evaluate optimize-demo test lint app
 
 setup:
-	$(PYTHON) -m pip install -e ".[data,ml,dev]"
+	$(PYTHON) -m pip install -e ".[data,ml,optimization,dev]"
 
 validate-config:
 	$(PYTHON) -m steelflow validate-config --all
@@ -33,7 +33,7 @@ evaluate:
 	$(PYTHON) -m steelflow evaluate --profile dev
 
 optimize-demo:
-	$(PYTHON) -m steelflow optimize-demo --profile dev
+	$(PYTHON) -m steelflow optimize-demo --profile mvp
 
 test:
 	$(PYTHON) -m pytest

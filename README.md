@@ -8,7 +8,7 @@ SteelFlow AI é um *decision-support digital twin* simplificado para uma fábric
 
 ## Estado atual
 
-As Fases 0–5 estabelecem a fundação, o gerador auditável, a camada analítica, o contrato point-in-time e a modelagem temporal:
+As Fases 0–6 estabelecem a fundação, o gerador auditável, a camada analítica, o contrato point-in-time, a modelagem temporal e a otimização segura:
 
 - configuração YAML tipada e estrita para os perfis `test`, `dev` e `mvp`;
 - CLI instalável com diagnóstico, validação e hash estável das configurações;
@@ -30,19 +30,22 @@ As Fases 0–5 estabelecem a fundação, o gerador auditável, a camada analíti
 - quatro janelas cronológicas com embargo de rótulos, baselines e dez tarefas CatBoost;
 - calibração sigmoid exclusiva, P10/P50/P90, TreeSHAP global/segmentado/local e model cards;
 - avaliação final idempotente, métricas segmentadas e auditoria causal posterior 6/6.
+- envelopes históricos condicionais, barreira OOD e limites de mudança para 11 controles elegíveis;
+- NSGA-II com seis objetivos, nove restrições duras e quatro cenários comparáveis por contexto;
+- recusa explícita fora da distribuição, incerteza P10/P50/P90 e aprovação humana obrigatória.
 
-O perfil `mvp` foi gerado, validado, curado e modelado. A meta de reduzir em 5% o MAE de TBH não foi atingida: a melhora final foi 0,98%. Ainda não há otimização, recomendação, OOD guard ou controle de máquina; esses itens pertencem à Fase 6 após aprovação.
+O perfil `mvp` foi gerado, validado, curado, modelado e otimizado em três contextos demonstrativos. A meta de reduzir em 5% o MAE de TBH não foi atingida: a melhora final foi 0,98%. Os cenários da Fase 6 são estimativas em backtest sintético, não contrafactuais causais nem instruções de operação. Não há controle de máquina.
 
 ## Instalação
 
-Python compatível: `>=3.11,<3.15`. A Fase 5 foi verificada no Python 3.14.6 com CatBoost 1.2.10, scikit-learn 1.9.0 e SHAP 0.52.0. O `pymoo` permanece isolado no extra `optimization` até a Fase 6.
+Python compatível: `>=3.11,<3.15`. As Fases 5–6 foram verificadas no Python 3.14.6 com CatBoost 1.2.10, scikit-learn 1.9.0, SHAP 0.52.0 e pymoo 0.6.2.
 
 ### Windows PowerShell
 
 ```powershell
 python -m venv .venv
 .venv\Scripts\python -m pip install --upgrade pip
-.venv\Scripts\python -m pip install -e ".[data,ml,dev]"
+.venv\Scripts\python -m pip install -e ".[data,ml,optimization,dev]"
 .venv\Scripts\python -m steelflow doctor
 .venv\Scripts\python -m pytest
 ```
@@ -52,7 +55,7 @@ python -m venv .venv
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install --upgrade pip
-.venv/bin/python -m pip install -e ".[data,ml,dev]"
+.venv/bin/python -m pip install -e ".[data,ml,optimization,dev]"
 .venv/bin/python -m steelflow doctor
 .venv/bin/python -m pytest
 ```
@@ -61,7 +64,7 @@ Se `uv` estiver disponível, o bootstrap equivalente é:
 
 ```bash
 uv venv
-uv pip install -e ".[data,ml,dev]"
+uv pip install -e ".[data,ml,optimization,dev]"
 uv run steelflow doctor
 uv run pytest
 ```
@@ -83,6 +86,7 @@ python -m steelflow diagnose --profile dev
 python -m steelflow build-features --profile dev
 python -m steelflow train --profile mvp
 python -m steelflow evaluate --profile mvp
+python -m steelflow optimize-demo --profile mvp
 python -m pytest
 python -m ruff check .
 ```
@@ -100,10 +104,10 @@ Quando `make` estiver instalado, `make setup`, `make validate-config`, `make doc
 | `make build-features` | `python -m steelflow build-features --profile dev` | Implementado |
 | `make train` | `python -m steelflow train --profile dev` | Implementado |
 | `make evaluate` | `python -m steelflow evaluate --profile dev` | Implementado |
-| `make optimize-demo` | `python -m steelflow optimize-demo --profile dev` | 6 |
+| `make optimize-demo` | `python -m steelflow optimize-demo --profile mvp` | Implementado |
 | `make app` | `python -m steelflow app --profile dev` | 7 |
 
-Os comandos de otimização e aplicativo retornam código diferente de zero e informam claramente a fase em que serão implementados.
+O comando de aplicativo permanece reservado para a Fase 7 e retorna código diferente de zero com mensagem explícita.
 
 ## Perfis
 
@@ -154,7 +158,13 @@ O `mvp` treinou dez tarefas em 211,09 s com baselines, CatBoost, calibração e 
 
 O resultado de TBH deve ser lido sem seleção favorável: a melhor baseline obteve MAE 2,158 t/h e o CatBoost, 2,137 t/h, melhora relativa de 0,98%. Portanto, o critério de 5% **não foi atingido**. Consulte [o relatório de modelagem](docs/MODELING_REPORT.md) e os [model cards](docs/MODEL_CARDS.md).
 
-## Arquitetura planejada
+## Evidência da Fase 6
+
+O `mvp` executou 20.160 avaliações NSGA-II em três contextos condicionados por produto, grau, linha e faixa de desgaste. Foram publicados 12 cenários (`current`, `conservative`, `balanced` e `productivity`), todos dentro do envelope e das nove restrições duras. As três sondas OOD foram recusadas sem emitir recomendação. A validação passou 14/14 checks e duas reconstruções completas produziram o mesmo hash lógico.
+
+O surrogate auxiliar de `actual_tph`, avaliado somente na janela de calibração, obteve MAE P50 de 0,619 t/h e cobertura P10–P90 de 80,33%. A proxy de TBH combina essa mediana com a probabilidade calibrada de falha de qualidade. Ela não substitui o modelo TBH da Fase 5 e não possui alegação de desempenho no teste final. Consulte o [relatório de otimização](docs/OPTIMIZATION_REPORT.md) e o [contrato de cenários](docs/SCENARIO_CONTRACT.md).
+
+## Arquitetura implementada até a Fase 6
 
 ```text
 Versioned YAML

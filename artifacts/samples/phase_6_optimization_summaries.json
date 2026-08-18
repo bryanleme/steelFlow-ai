@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "phase": 6,
+  "profile": "mvp",
+  "simulation_run_id": "sim-mvp-v0.1.0-740ec922f950",
+  "optimization_version": "1.0.0",
+  "optimization_config_sha256": "5c551a082b064ae7c91d83723397fbb80034ee4d397edbbd177325fdbafdd952",
+  "logical_sha256": "0bacb0178932cd55c12e6947744cad3281218cf2d17d2e057c383774525eae92",
+  "complete_rebuild_hash_match": true,
+  "optimizer": {
+    "algorithm": "NSGA-II",
+    "implementation": "pymoo 0.6.2",
+    "population_size": 96,
+    "generations": 70,
+    "evaluations": 20160,
+    "objectives": 6,
+    "hard_constraints": 9
+  },
+  "throughput_surrogate_calibration": {
+    "final_test_labels_used": false,
+    "rows": 24987,
+    "point_mae_tph": 0.6232335938016298,
+    "point_r2": 0.8887262556644199,
+    "p50_mae_tph": 0.6188846860978988,
+    "empirical_coverage_80": 0.8032576940008804,
+    "mean_interval_width_tph": 2.0156549164559516
+  },
+  "contexts": [
+    {
+      "context_id": "context-01-line_01",
+      "conditional_support_rows": 627,
+      "pareto_scenarios": 42,
+      "current_tbh_proxy": 17.299143573303567,
+      "productivity_tbh_proxy": 17.62636480458694,
+      "productivity_estimated_fpy": 0.8309908709601506
+    },
+    {
+      "context_id": "context-02-line_02",
+      "conditional_support_rows": 778,
+      "pareto_scenarios": 96,
+      "current_tbh_proxy": 20.33561236304175,
+      "productivity_tbh_proxy": 20.680278707616278,
+      "productivity_estimated_fpy": 0.8331127451797983
+    },
+    {
+      "context_id": "context-03-line_03",
+      "conditional_support_rows": 844,
+      "pareto_scenarios": 96,
+      "current_tbh_proxy": 20.755747455079756,
+      "productivity_tbh_proxy": 21.092515984067706,
+      "productivity_estimated_fpy": 0.9044316682752473
+    }
+  ],
+  "validation": {
+    "status": "PASS",
+    "checks": 14,
+    "passed": 14,
+    "published_scenarios": 12,
+    "hard_constraint_pass_rate": 1.0,
+    "ood_probes": 3,
+    "ood_recommendations_issued": 0,
+    "human_approval_required": true
+  },
+  "interpretation": "cenários estimados em backtest sintético; não contrafactuais causais",
+  "synthetic_scope": "protótipo offline; sem controle de máquina"
+}
