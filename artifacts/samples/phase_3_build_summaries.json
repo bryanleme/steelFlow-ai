@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "generated_at_date": "2026-08-18",
+  "prototype_scope": "offline synthetic data; no machine control",
+  "runs": {
+    "dev": {
+      "database_bytes": 92549120,
+      "database_sha256": "b025f7e8439442ed0c7e1f020935864fe5606e1ab63b358fcd0717c54eff1539",
+      "elapsed_seconds": 18.580875,
+      "object_counts": {
+        "analytics": 32,
+        "curated": 15,
+        "features": 2,
+        "model_outputs": 2,
+        "raw": 15
+      },
+      "powerbi_export_bytes": 1075634,
+      "powerbi_export_tables": 13,
+      "simulation_run_id": "sim-dev-v0.1.0-36068c9e490c",
+      "statistics": {
+        "energy_kwh": 1056494.742992,
+        "executive_rows": 90,
+        "global_fpy": 0.860762,
+        "global_tbh": 19.173687,
+        "good_tonnes": 1733.672326,
+        "order_rows": 500,
+        "productive_hours": 90.419351,
+        "unplanned_downtime_minutes": 19121.12177
+      },
+      "validation": {
+        "checks": 43,
+        "failed": 0,
+        "passed": 43,
+        "status": "PASS"
+      }
+    },
+    "test": {
+      "database_bytes": 20197376,
+      "database_sha256": "cef33d4a9c3a76d05b20d5170e1d252301f48acacaf289035d0d34ce49a04b6b",
+      "elapsed_seconds": 1.811606,
+      "object_counts": {
+        "analytics": 32,
+        "curated": 15,
+        "features": 2,
+        "model_outputs": 2,
+        "raw": 15
+      },
+      "powerbi_export_bytes": 86333,
+      "powerbi_export_tables": 13,
+      "simulation_run_id": "sim-test-v0.1.0-dab663420791",
+      "statistics": {
+        "energy_kwh": 47540.124543,
+        "executive_rows": 6,
+        "global_fpy": 0.845833,
+        "global_tbh": 18.155229,
+        "good_tonnes": 75.354218,
+        "order_rows": 24,
+        "productive_hours": 4.150552,
+        "unplanned_downtime_minutes": 841.09701
+      },
+      "validation": {
+        "checks": 43,
+        "failed": 0,
+        "passed": 43,
+        "status": "PASS"
+      }
+    }
+  }
+}

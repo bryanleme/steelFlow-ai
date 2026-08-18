@@ -8,7 +8,7 @@
 | R-004 | Performance aparente vir de mix ou vazamento temporal. | Média | Crítico | Baseline condicionado, split temporal em quatro janelas, backtesting e testes point-in-time. | Aberto |
 | R-005 | Evento raro insuficiente para calibração/segmentos. | Média | Alto | Dimensionar taxas plausíveis no `test`/`dev`, medir suporte e reportar intervalos; não equilibrar artificialmente a população. `dev` produziu 0,819% de refugo e 820 paradas. | Aberto para modelagem |
 | R-006 | Cenários OOD receberem recomendação indevida. | Baixa | Crítico | Guard de envelope condicional, distância histórica, restrições duras e recusa explícita. | Aberto |
-| R-007 | Power BI Desktop indisponível impedir `.pbix` validado. | Alta | Médio | Entregar esquema estrela, exports, relações, Power Query, tema, wireframe e DAX; declarar limitação sem alegar `.pbix`. | Aberto |
-| R-008 | Ausência de Git reduzir rastreabilidade de mudanças. | Alta | Médio | Manter versões nos arquivos/configurações e manifests; solicitar inicialização somente se o usuário autorizar. | Aberto |
+| R-007 | Power BI Desktop indisponível impedir `.pbix` validado. | Alta | Médio | Esquema estrela, 13 exports, relações, Power Query e DAX foram entregues; tema/wireframe ficam para a Fase 7; não alegar `.pbix`. | Parcialmente mitigado; limitação aberta |
+| R-008 | Ausência de Git reduzir rastreabilidade de mudanças. | Baixa | Médio | Repositório inicializado e sincronizado com o remoto autorizado; manter commits por checkpoint. | Mitigado |
 | R-009 | Linguagem de portfólio sugerir resultado real ou causalidade. | Média | Alto | Avisos persistentes, glossário aprovado e auditoria de termos/números antes da publicação. | Aberto |
 | R-010 | `make`/`uv` ausentes no Windows. | Alta | Baixo | Documentar e testar comandos equivalentes com `python -m ...`; manter atalhos opcionais. | Mitigado |

@@ -1,0 +1,87 @@
+// SteelFlow AI — offline synthetic prototype. Internal simulated limits only.
+// These measures do not represent API 5CT validation or real factory performance.
+
+Good Tonnes =
+SUM ( fact_line_shift[good_tonnes] )
+
+Productive Hours =
+SUM ( fact_line_shift[productive_hours] )
+
+TBH =
+DIVIDE ( [Good Tonnes], [Productive Hours] )
+
+FPY =
+DIVIDE (
+    SUMX ( fact_line_shift, fact_line_shift[fpy] * fact_line_shift[tube_count] ),
+    SUM ( fact_line_shift[tube_count] )
+)
+
+Availability =
+DIVIDE (
+    [Productive Hours],
+    [Productive Hours] + DIVIDE ( SUM ( fact_line_shift[unplanned_downtime_minutes] ), 60 )
+)
+
+Performance =
+MIN (
+    1,
+    DIVIDE (
+        SUM ( fact_line_shift[total_tonnes] ),
+        42 * [Productive Hours]
+    )
+)
+
+Quality =
+DIVIDE ( [Good Tonnes], SUM ( fact_line_shift[total_tonnes] ) )
+
+OEE =
+[Availability] * [Performance] * [Quality]
+
+Scrap Rate =
+DIVIDE (
+    SUMX ( fact_line_shift, fact_line_shift[scrap_rate] * fact_line_shift[tube_count] ),
+    SUM ( fact_line_shift[tube_count] )
+)
+
+Rework Rate =
+DIVIDE (
+    SUMX ( fact_line_shift, fact_line_shift[rework_rate] * fact_line_shift[tube_count] ),
+    SUM ( fact_line_shift[tube_count] )
+)
+
+Energy kWh =
+SUM ( fact_line_shift[energy_kwh] )
+
+Energy per Good Tonne =
+DIVIDE ( [Energy kWh], [Good Tonnes] )
+
+Unplanned Downtime Minutes =
+SUM ( fact_line_shift[unplanned_downtime_minutes] )
+
+Quality Characteristic Mean =
+DIVIDE (
+    SUMX ( fact_quality, fact_quality[mean_value] * fact_quality[inspection_count] ),
+    SUM ( fact_quality[inspection_count] )
+)
+
+Simulated Mechanical Conformance =
+DIVIDE (
+    SUMX (
+        FILTER (
+            fact_quality,
+            fact_quality[characteristic] IN { "yield_strength_mpa", "tensile_strength_mpa" }
+        ),
+        fact_quality[conformance_rate] * fact_quality[inspection_count]
+    ),
+    SUMX (
+        FILTER (
+            fact_quality,
+            fact_quality[characteristic] IN { "yield_strength_mpa", "tensile_strength_mpa" }
+        ),
+        fact_quality[inspection_count]
+    )
+)
+
+Next-window Downtime Probability =
+// Intentionally blank until a temporally calibrated Phase 5 model is available.
+BLANK ()

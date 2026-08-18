@@ -8,7 +8,7 @@ SteelFlow AI é um *decision-support digital twin* simplificado para uma fábric
 
 ## Estado atual
 
-As Fases 0, 1 e 2 estabelecem a fundação e o gerador auditável:
+As Fases 0–3 estabelecem a fundação, o gerador auditável e a camada analítica:
 
 - configuração YAML tipada e estrita para os perfis `test`, `dev` e `mvp`;
 - CLI instalável com diagnóstico, validação e hash estável das configurações;
@@ -20,8 +20,12 @@ As Fases 0, 1 e 2 estabelecem a fundação e o gerador auditável:
 - IDs, seeds, manifests e hashes lógicos/físicos determinísticos;
 - verdade causal por tubo armazenada fora da camada `raw` e proibida para features/modelos;
 - contratos automáticos de PK/FK, temporalidade, domínios, ranges, completude e linhagem.
+- DuckDB recriável com schemas `raw`, `curated`, `analytics`, `features`, `model_outputs` e `metadata`;
+- fatos, dimensões e marts reconciliados nos grãos por ordem e data × linha × turno;
+- catálogo executável e documentação de 17 KPIs, incluindo indicadores ainda planejados;
+- 13 tabelas estrela exportadas em CSV e Parquet para Power BI, com hashes e DAX.
 
-Os perfis `test` e `dev` já foram gerados e validados. Curadoria analítica e DuckDB persistente começam apenas na Fase 3.
+Os perfis `test` e `dev` já foram gerados, curados e validados. A próxima fase aprovada deverá tratar diagnóstico, ajuste de mix e congelamento do contrato de features; ainda não há modelo preditivo ou recomendação.
 
 ## Instalação
 
@@ -65,8 +69,10 @@ python -m steelflow config-hash --profile dev
 python -m steelflow doctor --json
 python -m steelflow generate --profile test
 python -m steelflow validate-data --profile test
+python -m steelflow build-db --profile test
 python -m steelflow generate --profile dev
 python -m steelflow validate-data --profile dev
+python -m steelflow build-db --profile dev
 python -m pytest
 python -m ruff check .
 ```
@@ -79,13 +85,13 @@ Quando `make` estiver instalado, `make setup`, `make validate-config`, `make doc
 |---|---|---:|
 | `make generate-dev` | `python -m steelflow generate --profile dev` | Implementado |
 | `make validate-data` | `python -m steelflow validate-data --profile dev` | Implementado |
-| `make build-db` | `python -m steelflow build-db --profile dev` | 3 |
+| `make build-db` | `python -m steelflow build-db --profile dev` | Implementado |
 | `make train` | `python -m steelflow train --profile dev` | 5 |
 | `make evaluate` | `python -m steelflow evaluate --profile dev` | 5 |
 | `make optimize-demo` | `python -m steelflow optimize-demo --profile dev` | 6 |
 | `make app` | `python -m steelflow app --profile dev` | 7 |
 
-Antes da fase correspondente, cada comando retorna código diferente de zero e informa claramente que ainda não foi implementado.
+Os comandos de modelagem, otimização e aplicativo retornam código diferente de zero e informam claramente a fase em que serão implementados.
 
 ## Perfis
 
@@ -108,13 +114,24 @@ Medições locais em Python 3.14.6, não benchmarks universais. Os dados são in
 
 Os arquivos são gravados em `data/raw/<profile>/<simulation_run_id>/`; a verdade causal fica separada em `data/ground_truth/`. Ambos são recriáveis e ignorados pelo Git. `--force` substitui somente o diretório determinístico da configuração selecionada.
 
+## Evidência da Fase 3
+
+| Perfil | Banco DuckDB | Tempo de build | Validação analítica | Marts executivos / ordens | Exports Power BI |
+|---|---:|---:|---:|---:|---:|
+| `test` | 20,20 MB | 1,81 s | 43/43 | 6 / 24 | 13 |
+| `dev` | 92,55 MB | 18,58 s | 43/43 | 90 / 500 | 13 |
+
+O `dev` reconciliou 1.733,672 t boas e 90,419 h produtivas, produzindo TBH sintético global de 19,174 t/h. Esses números são evidências técnicas da simulação, não ganhos reais nem benchmarks universais.
+
+O banco fica em `data/analytics/<profile>/<simulation_run_id>/`; os arquivos para Power BI, em `powerbi/exports/<profile>/<simulation_run_id>/`. Ambos são recriáveis e ignorados pelo Git. Consulte [o modelo analítico](docs/ANALYTICAL_MODEL.md), [o catálogo de KPIs](docs/KPI_CATALOG.md) e [as instruções do Power BI](powerbi/README.md).
+
 ## Arquitetura planejada
 
 ```text
 Versioned YAML
       |
       v
-Synthetic generator --> raw Parquet --> curated DuckDB --> analytics / features
+Synthetic generator --> raw Parquet --> curated DuckDB --> analytics / feature snapshots
                                                    |               |
                                                    v               v
                                              Power BI exports   temporal ML

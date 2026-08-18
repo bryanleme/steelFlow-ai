@@ -4,7 +4,7 @@
 
 Construir o SteelFlow AI como protótipo offline e reproduzível de apoio à decisão para uma fábrica fictícia de tubos OCTG sem costura. Todo dado será sintético; todos os limites, internos e simulados. O trabalho avança por checkpoints aprovados, sem iniciar a fase seguinte silenciosamente.
 
-**Status:** Fases 0, 1 e 2 implementadas e validadas localmente em 2026-08-18; Fase 3 aguarda aprovação do Checkpoint 2.
+**Status:** Fases 0–3 implementadas e validadas localmente em 2026-08-18; Fase 4 aguarda aprovação do Checkpoint 3.
 
 ## Estado inicial auditado em 2026-08-18
 
@@ -55,6 +55,8 @@ Construir o SteelFlow AI como protótipo offline e reproduzível de apoio à dec
 2. TBH/GTPH reconcilia massa aprovada na primeira passagem e horas produtivas nos grãos linha × turno e ordem.
 3. Todos os KPIs documentam fórmula, grão, unidade, filtros, origem e divisão por zero.
 4. Marts e exports preservam relacionamentos do esquema estrela.
+
+**Evidência executada:** os perfis `test` e `dev` produziram bancos DuckDB com 66 objetos e 13 exports estrela cada. A validação final executou 43 checks por perfil sem falhas, incluindo linhagem, contagens das 15 tabelas curated, grãos, fórmulas, reconciliações, chaves, snapshots point-in-time e checksums dos exports.
 
 ### Fase 4
 
@@ -118,4 +120,4 @@ As dependências pesadas ficam em extras para que a fundação seja validável s
 
 ## Sequência imediata após aprovação
 
-Fase 3: construir o arquivo DuckDB recriável, camadas `raw`/`curated`/`analytics`, SQL legível, catálogo de KPIs, marts por linha × turno e ordem, reconciliações e exports em esquema estrela para Power BI. Nenhum modelo ou app será antecipado nessa fase.
+Fase 4: produzir diagnóstico reproduzível de tendências, mix, Pareto, controle estatístico e interações; refinar snapshots por instante de decisão; executar a bateria contra vazamento e congelar o contrato de features. Treinamento, calibração e SHAP permanecem fora desta fase.

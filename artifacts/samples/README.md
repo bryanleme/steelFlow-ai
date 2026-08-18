@@ -1,6 +1,6 @@
 # Evidências leves versionadas
 
-Estes arquivos resumem execuções reais da Fase 2 sem versionar Parquet, causal truth ou manifests completos com centenas de arquivos.
+Estes arquivos resumem execuções reais das Fases 2–3 sem versionar Parquet, causal truth, bancos DuckDB ou manifests completos com centenas de arquivos.
 
 Recrie e valide os dados com:
 
@@ -9,6 +9,8 @@ python -m steelflow generate --profile test
 python -m steelflow validate-data --profile test
 python -m steelflow generate --profile dev
 python -m steelflow validate-data --profile dev
+python -m steelflow build-db --profile test
+python -m steelflow build-db --profile dev
 ```
 
 Os resultados são exclusivamente sintéticos e locais.

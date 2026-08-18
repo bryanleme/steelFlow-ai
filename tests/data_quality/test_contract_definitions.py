@@ -54,3 +54,28 @@ def test_public_validator_does_not_import_private_causal_truth() -> None:
             imports.append(node.module or "")
 
     assert not any("generation._ground_truth" in imported for imported in imports)
+
+
+def test_powerbi_dax_contains_required_measures_and_safe_division() -> None:
+    dax = (ROOT / "powerbi" / "measures" / "steelflow_measures.dax").read_text(encoding="utf-8")
+    required_measures = (
+        "Good Tonnes =",
+        "Productive Hours =",
+        "TBH =",
+        "FPY =",
+        "Availability =",
+        "Performance =",
+        "Quality =",
+        "OEE =",
+        "Scrap Rate =",
+        "Rework Rate =",
+        "Energy per Good Tonne =",
+        "Unplanned Downtime Minutes =",
+        "Simulated Mechanical Conformance =",
+        "Next-window Downtime Probability =",
+    )
+
+    assert all(measure in dax for measure in required_measures)
+    assert dax.count("DIVIDE (") >= 10
+    assert "BLANK ()" in dax
+    assert "synthetic prototype" in dax

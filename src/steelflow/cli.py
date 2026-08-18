@@ -18,6 +18,7 @@ from steelflow.config import (
     load_config_bundle,
     resolve_project_root,
 )
+from steelflow.curation.database import DatabaseBuildError, build_analytics_database
 from steelflow.generation.generator import GenerationError, generate_dataset
 from steelflow.observability import configure_logging
 from steelflow.validation.raw_data import validate_raw_dataset
@@ -25,7 +26,6 @@ from steelflow.validation.raw_data import validate_raw_dataset
 LOGGER = logging.getLogger("steelflow.cli")
 
 _FUTURE_COMMAND_PHASES = {
-    "build-db": 3,
     "train": 5,
     "evaluate": 5,
     "optimize-demo": 6,
@@ -83,6 +83,16 @@ def build_parser() -> argparse.ArgumentParser:
         "validate-data", help="Validate the deterministic raw run for one profile."
     )
     _add_profile_argument(validate_data_parser)
+
+    build_database_parser = subparsers.add_parser(
+        "build-db", help="Build and validate DuckDB analytics plus Power BI exports."
+    )
+    _add_profile_argument(build_database_parser)
+    build_database_parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Replace only the analytical build for this exact deterministic run.",
+    )
 
     for command, phase in _FUTURE_COMMAND_PHASES.items():
         future_parser = subparsers.add_parser(
@@ -177,6 +187,25 @@ def _validate_data(profile: str, project_root: Path | None) -> int:
     return 0 if report.passed else 1
 
 
+def _build_database(profile: str, project_root: Path | None, *, force: bool) -> int:
+    root = resolve_project_root(project_root)
+    bundle = load_config_bundle(profile, root)
+    result = build_analytics_database(
+        bundle,
+        project_root=root,
+        overwrite=force,
+    )
+    print(
+        f"OK run_id={result.simulation_run_id} profile={profile} "
+        f"objects={sum(result.object_counts.values())} "
+        f"elapsed_seconds={result.elapsed_seconds:.3f}"
+    )
+    print(f"database_path={result.database_path.relative_to(root)}")
+    print(f"powerbi_export_path={result.export_path.relative_to(root)}")
+    print(f"validation_path={result.validation_path.relative_to(root)} status=PASS")
+    return 0
+
+
 def run(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -194,6 +223,8 @@ def run(argv: Sequence[str] | None = None) -> int:
             return _generate(args.profile, args.project_root, force=args.force)
         if args.command == "validate-data":
             return _validate_data(args.profile, args.project_root)
+        if args.command == "build-db":
+            return _build_database(args.profile, args.project_root, force=args.force)
         if args.command in _FUTURE_COMMAND_PHASES:
             phase = _FUTURE_COMMAND_PHASES[args.command]
             print(
@@ -202,7 +233,7 @@ def run(argv: Sequence[str] | None = None) -> int:
                 file=sys.stderr,
             )
             return 2
-    except (ConfigError, GenerationError, ValueError) as exc:
+    except (ConfigError, DatabaseBuildError, GenerationError, ValueError) as exc:
         LOGGER.error("command_failed", extra={"command": args.command, "reason": str(exc)})
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1

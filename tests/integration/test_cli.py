@@ -82,7 +82,6 @@ def test_config_hash_is_a_sha256_digest() -> None:
 @pytest.mark.parametrize(
     ("command", "phase"),
     [
-        ("build-db", 3),
         ("train", 5),
         ("evaluate", 5),
         ("optimize-demo", 6),

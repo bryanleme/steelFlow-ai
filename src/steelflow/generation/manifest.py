@@ -18,7 +18,16 @@ def utc_now() -> datetime:
 
 
 def dependency_versions() -> dict[str, str]:
-    packages = ("steelflow-ai", "numpy", "pyarrow", "pydantic", "PyYAML")
+    packages = (
+        "steelflow-ai",
+        "duckdb",
+        "numpy",
+        "pandas",
+        "polars",
+        "pyarrow",
+        "pydantic",
+        "PyYAML",
+    )
     versions: dict[str, str] = {"python": platform.python_version()}
     for package in packages:
         try:
