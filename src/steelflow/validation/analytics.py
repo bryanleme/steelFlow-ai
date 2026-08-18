@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -10,7 +11,6 @@ from typing import Any
 import duckdb
 
 from steelflow.config import ProjectConfigBundle
-from steelflow.curation.exports import POWERBI_EXPORTS, load_export_manifest
 from steelflow.generation.generator import load_manifest
 from steelflow.generation.schemas import EXPECTED_TABLES
 from steelflow.generation.writer import sha256_file
@@ -47,10 +47,16 @@ def _add_close_check(
     detail: str,
     *,
     tolerance: float = 1e-8,
+    relative_tolerance: float = 1e-12,
 ) -> None:
     report.add(
         check_id,
-        passed=abs(observed - expected) <= tolerance,
+        passed=math.isclose(
+            observed,
+            expected,
+            rel_tol=relative_tolerance,
+            abs_tol=tolerance,
+        ),
         observed=observed,
         expected=expected,
         detail=detail,
@@ -66,6 +72,9 @@ def validate_analytics_database(
     report_path: Path,
 ) -> ValidationReport:
     """Validate one database build and its Power BI exports."""
+
+    # Import lazily so this validation module remains independently importable.
+    from steelflow.curation.exports import POWERBI_EXPORTS, load_export_manifest
 
     raw_manifest = load_manifest(raw_run_path / "run_manifest.json")
     run_id = raw_manifest["simulation_run_id"]

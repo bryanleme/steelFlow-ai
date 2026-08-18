@@ -46,6 +46,8 @@ def test_help_smoke() -> None:
     assert "offline synthetic decision-support prototype" in result.stdout
     assert "diagnose" in result.stdout
     assert "build-features" in result.stdout
+    assert "train" in result.stdout
+    assert "evaluate" in result.stdout
 
 
 def test_all_configs_validate_from_cli() -> None:
@@ -84,8 +86,6 @@ def test_config_hash_is_a_sha256_digest() -> None:
 @pytest.mark.parametrize(
     ("command", "phase"),
     [
-        ("train", 5),
-        ("evaluate", 5),
         ("optimize-demo", 6),
         ("app", 7),
     ],

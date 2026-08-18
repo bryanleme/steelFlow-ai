@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "generated_at_date": "2026-08-18",
+  "prototype_scope": "offline synthetic data; no machine control",
+  "profile": "mvp",
+  "simulation_run_id": "sim-mvp-v0.1.0-740ec922f950",
+  "model_version": "1.0.0",
+  "modeling_config_sha256": "4330948e8ef9bfa3deba090d4e58630746726f31ab266944a5d07d49b278d7e5",
+  "feature_contract_sha256": "4b44cb01d05ee1203a36b93337b0403c0d7b69920089c3b3ee5ae29cdff0eeb6",
+  "scale": {
+    "public_rows": 12594517,
+    "raw_gib": 0.672,
+    "generation_seconds": 410.285,
+    "training_seconds": 211.089
+  },
+  "temporal_isolation": {
+    "windows": ["train", "tuning", "calibration", "final_test"],
+    "label_embargo_rows": {"pre_order": 37, "in_process_rolling": 75, "asset_window": 45},
+    "final_test_evaluations": 1,
+    "subsequent_evaluate_calls_reuse_manifest": true
+  },
+  "engineering_goal": {
+    "metric": "TBH MAE relative improvement versus strongest baseline",
+    "target_fraction": 0.05,
+    "strongest_baseline": "conditioned_median",
+    "baseline_mae": 2.158357,
+    "catboost_mae": 2.137127,
+    "relative_improvement": 0.009836,
+    "met": false
+  },
+  "continuous_targets": {
+    "tbh": {"mae": 2.137127, "rmse": 2.851165, "r2": 0.438962, "coverage_80": 0.773889},
+    "energy_intensity": {"mae": 10.416806, "rmse": 14.234654, "r2": 0.520207, "coverage_80": 0.821338},
+    "outer_diameter_deviation": {"mae": 0.263785, "rmse": 0.330335, "r2": -0.000755, "coverage_80": 0.78504},
+    "wall_eccentricity": {"mae": 0.145339, "rmse": 0.182639, "r2": 0.930438, "coverage_80": 0.798933},
+    "ovality": {"mae": 0.132783, "rmse": 0.165996, "r2": 0.402497, "coverage_80": 0.796267},
+    "downtime_duration": {"mae": 15.132731, "rmse": 23.515926, "r2": -0.047188, "coverage_80": 0.775831}
+  },
+  "classification_targets": {
+    "quality_failure": {"prevalence": 0.15192, "pr_auc": 0.416808, "roc_auc": 0.72566, "brier": 0.112089, "ece_10": 0.015717},
+    "rework": {"prevalence": 0.14336, "pr_auc": 0.407169, "roc_auc": 0.729338, "brier": 0.106794, "ece_10": 0.014996},
+    "scrap": {"prevalence": 0.00856, "pr_auc": 0.013562, "roc_auc": 0.61961, "brier": 0.008476, "ece_10": 0.000526},
+    "downtime_occurrence": {"prevalence": 0.170618, "pr_auc": 0.255073, "roc_auc": 0.672506, "brier": 0.133004, "ece_10": 0.002292}
+  },
+  "explainability": {"tasks": 10, "tree_shap_files": 30, "segment_metric_rows": 218, "local_scenarios_per_task": 10},
+  "causal_recovery_audit": {"status": "PASS", "recovered": 6, "tested": 6, "required": 4, "rows": 37500},
+  "validation": {"status": "PASS", "checks": 50, "passed": 50, "failed": 0},
+  "interpretation": "synthetic benchmark only; TBH engineering target not met"
+}

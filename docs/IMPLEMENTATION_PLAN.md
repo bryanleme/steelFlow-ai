@@ -4,7 +4,7 @@
 
 Construir o SteelFlow AI como protótipo offline e reproduzível de apoio à decisão para uma fábrica fictícia de tubos OCTG sem costura. Todo dado será sintético; todos os limites, internos e simulados. O trabalho avança por checkpoints aprovados, sem iniciar a fase seguinte silenciosamente.
 
-**Status:** Fases 0–4 implementadas e validadas localmente em 2026-08-18; Fase 5 aguarda aprovação do Checkpoint 4.
+**Status:** Fases 0–5 implementadas e validadas localmente em 2026-08-18; Fase 6 aguarda aprovação do Checkpoint 5.
 
 ## Estado inicial auditado em 2026-08-18
 
@@ -12,7 +12,7 @@ Construir o SteelFlow AI como protótipo offline e reproduzível de apoio à dec
 - O diretório não foi reconhecido como repositório Git; portanto, não foi possível obter branch ou alterações pendentes.
 - Ambiente encontrado: Windows 11, Python 3.14.6 e `pip` 26.1.2.
 - `uv`, `make`, Pydantic, PyYAML, pytest e Ruff não estavam inicialmente disponíveis.
-- Não há evidência, nesta fase, de Power BI Desktop nem das dependências binárias de dados/ML.
+- Não havia evidência inicial de Power BI Desktop nem das dependências binárias de dados/ML; CatBoost, scikit-learn e SHAP foram posteriormente validados no Python 3.14.6.
 
 ## Estratégia de entrega
 
@@ -76,6 +76,8 @@ Construir o SteelFlow AI como protótipo offline e reproduzível de apoio à dec
 5. A meta de 5% em MAE de TBH é reportada honestamente, atingida ou não.
 6. SHAP, estabilidade temporal, latência e limitações constam no model card.
 
+**Evidência executada:** o `mvp` gerou 12.594.517 registros e três snapshots com 12.000 ordens, 250.000 tubos e 131.580 janelas de ativo. Dez tarefas compararam baselines e CatBoost; quatro classificadores receberam calibração sigmoid exclusiva e seis regressões receberam P10/P50/P90. A avaliação final única passou 50/50 checks, produziu 218 recortes segmentados e 30 artefatos TreeSHAP. Foram recuperados 6/6 mecanismos sintéticos após o congelamento. A meta de TBH não foi atingida: 0,98% de redução de MAE contra meta de 5%.
+
 ### Fase 6
 
 1. Somente variáveis controláveis elegíveis variam no otimizador.
@@ -103,23 +105,24 @@ Esta é uma estimativa de capacidade anterior à execução, não um benchmark. 
 | Parquet raw | 2–6 GB | compressão Zstandard/Snappy e cardinalidade moderada |
 | DuckDB + curated + exports | 3–8 GB adicionais | materialização seletiva, sem duplicar sensores integralmente |
 
-Antes de executar `mvp`, a Fase 2 medirá tempo, memória e tamanho do perfil `dev`, extrapolará por tabela e exigirá espaço livre compatível. Se a máquina não suportar a escala, o pipeline permanecerá escalável e a limitação será registrada sem inventar resultados.
+Antes da execução, foram verificados 286,9 GB livres e as medições do `dev`. O `mvp` foi então executado sem reduzir os volumes configurados.
 
 ### Refinamento após execução de `dev`
 
 O perfil `dev` produziu 529.014 registros públicos em 19,05 segundos, 30,35 MB de Parquet raw e 0,94 MB de verdade causal isolada. A validação de 83 contratos levou 1,61 segundo. Esses números são medições locais, não garantias para outra máquina.
 
-Uma extrapolação linear por linhas sugere aproximadamente 8–20 minutos e 0,7–1,5 GB de Parquet raw para `mvp`. O pico de memória ainda não foi medido por telemetria externa; pela escrita em lotes de até 100 mil registros, mantém-se uma reserva conservadora de 2–6 GB. O perfil `mvp` não será executado sem nova verificação de espaço e sem necessidade demonstrável.
+A execução real produziu 12.594.517 registros em 410,29 segundos e 0,672 GiB de Parquet raw. O DuckDB ocupou 1,461 GiB e o run final de modelos, 69,74 MiB. O pico de memória não foi medido por telemetria externa; esses números são medições locais, não garantias para outra máquina.
 
 ## Dependências por camada
 
 - Fundação: Pydantic e PyYAML; pytest/Ruff apenas em desenvolvimento.
 - Dados: NumPy, pandas/Polars, PyArrow e DuckDB.
-- ML: scikit-learn, CatBoost, SHAP, pymoo e joblib.
+- ML: scikit-learn, CatBoost, SHAP e joblib.
+- Otimização: pymoo, isolado até a Fase 6.
 - Produto: Streamlit e Plotly.
 
 As dependências pesadas ficam em extras para que a fundação seja validável sem antecipar incompatibilidades ou custo de instalação das fases futuras.
 
 ## Sequência imediata após aprovação
 
-Fase 5: definir janelas cronológicas distintas de treino, tuning, calibração e teste final; implementar baselines e modelos principais; avaliar incerteza, calibração, segmentos, estabilidade e latência; produzir SHAP, model cards e auditoria separada dos mecanismos sintéticos. O teste final permanecerá intocado durante ajustes.
+Fase 6: construir envelopes condicionais somente com variáveis controláveis, detectar e recusar cenários OOD, implementar NSGA-II com restrições duras e publicar alternativas Pareto reproduzíveis. O otimizador deverá propagar incerteza dos modelos, manter aprovação humana e não ocultar as limitações observadas na Fase 5.

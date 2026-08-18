@@ -29,5 +29,5 @@ O contrato executável está em `analytics.kpi_catalog`. As razões retornam `NU
 - TBH nunca é calculado como média de TBHs atômicos; soma-se massa boa e horas antes da divisão.
 - FPY, refugo e retrabalho no Power BI são médias ponderadas por `tube_count`.
 - `energy_events` contém três etapas por tubo. O mart de energia remove essa repetição da massa boa antes de calcular kWh/t.
-- A probabilidade de parada permanece deliberadamente vazia na Fase 3. Ela só será materializada após treinamento e calibração temporal na Fase 5.
+- A Fase 5 gerou probabilidades calibradas em `data/model_outputs`, mas o mart DuckDB e a medida Power BI permanecem deliberadamente vazios até a integração de produto da Fase 7; nenhuma previsão é fabricada no banco.
 - O valor de 42 t/h é uma referência exclusivamente interna e simulada para o componente Performance; não é capacidade publicada ou validada de equipamento real.

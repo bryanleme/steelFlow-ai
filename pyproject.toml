@@ -28,9 +28,11 @@ data = [
 ml = [
   "catboost>=1.2.7,<2",
   "joblib>=1.4,<2",
-  "pymoo>=0.6.1,<0.7",
   "scikit-learn>=1.6,<2",
   "shap>=0.46,<1",
+]
+optimization = [
+  "pymoo>=0.6.1,<0.7",
 ]
 app = [
   "plotly>=5.24,<7",
@@ -42,7 +44,7 @@ dev = [
   "ruff>=0.9,<1",
 ]
 all = [
-  "steelflow-ai[data,ml,app,dev]",
+  "steelflow-ai[data,ml,optimization,app,dev]",
 ]
 
 [project.scripts]

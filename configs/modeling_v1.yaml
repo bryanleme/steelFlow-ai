@@ -1,0 +1,98 @@
+schema_version: "1.0"
+model_version: "1.0.0"
+random_seed: 20260818
+splits:
+  train_fraction: 0.55
+  tuning_fraction: 0.20
+  calibration_fraction: 0.10
+  final_test_fraction: 0.15
+  backtest_folds: 3
+training:
+  iterations: 140
+  backtest_iterations: 60
+  depth: 6
+  learning_rate: 0.06
+  early_stopping_rounds: 20
+  random_forest_estimators: 60
+  random_forest_max_depth: 12
+  min_segment_rows: 100
+  shap_sample_size: 500
+  scenario_count: 10
+  alert_budgets: [0.01, 0.05, 0.10]
+tasks:
+  - name: tbh
+    snapshot: pre_order
+    problem_type: regression
+    target: tbh
+    quantiles: true
+    backtest: true
+    unit: t/h
+    point_loss: MAE
+    iterations_override: 500
+    depth_override: 5
+    learning_rate_override: 0.04
+  - name: energy_intensity
+    snapshot: in_process_rolling
+    problem_type: regression
+    target: energy_per_good_tonne_kwh_t
+    quantiles: true
+    backtest: false
+    unit: kWh/t boa
+  - name: outer_diameter_deviation
+    snapshot: in_process_rolling
+    problem_type: regression
+    target: outer_diameter_deviation_mm
+    quantiles: true
+    backtest: false
+    unit: mm
+  - name: wall_eccentricity
+    snapshot: in_process_rolling
+    problem_type: regression
+    target: wall_eccentricity_pct
+    quantiles: true
+    backtest: false
+    unit: "%"
+  - name: ovality
+    snapshot: in_process_rolling
+    problem_type: regression
+    target: ovality_pct
+    quantiles: true
+    backtest: false
+    unit: "%"
+  - name: downtime_duration
+    snapshot: asset_window
+    problem_type: regression
+    target: next_window_downtime_duration_minutes
+    positive_filter: next_window_downtime_occurred
+    quantiles: true
+    backtest: false
+    unit: min
+  - name: quality_failure
+    snapshot: in_process_rolling
+    problem_type: classification
+    target: approved_first_pass
+    invert_target: true
+    quantiles: false
+    backtest: true
+    unit: probability
+  - name: rework
+    snapshot: in_process_rolling
+    problem_type: classification
+    target: is_rework
+    quantiles: false
+    backtest: false
+    unit: probability
+  - name: scrap
+    snapshot: in_process_rolling
+    problem_type: classification
+    target: is_scrap
+    quantiles: false
+    backtest: false
+    unit: probability
+  - name: downtime_occurrence
+    snapshot: asset_window
+    problem_type: classification
+    target: next_window_downtime_occurred
+    quantiles: false
+    backtest: true
+    unit: probability

@@ -27,11 +27,11 @@ O alinhamento entre arquivos é determinístico e ordenado pela chave de entidad
 4. Targets, disposições, massa boa, horas produtivas e proxies diretos são bloqueados por nome e por seleção explícita.
 5. Agregações históricas de ativo usam apenas eventos encerrados antes do snapshot; o target observa as duas horas seguintes.
 6. O pacote não lê nem referencia `data/ground_truth`.
-7. Nenhum imputador, scaler ou encoder é ajustado nesta fase. O contrato fixa `preprocessing_fit_scope: fold_train_only`; a Fase 5 deverá ajustar transformadores somente no fold de treino.
+7. Nenhum imputador, scaler ou encoder é ajustado na materialização. O contrato fixa `preprocessing_fit_scope: fold_train_only`; na Fase 5, esses transformadores foram encapsulados e ajustados somente no treino.
 
 ## Target de parada
 
-A janela de duas horas é definida por ativo para preservar a raridade sem reamostragem artificial. No `dev`, 13,6481% das 5.400 janelas contêm pelo menos uma parada futura; duração é zero quando não há evento. A ocorrência e a duração serão modeladas separadamente na Fase 5.
+A janela de duas horas é definida por ativo para preservar a raridade sem reamostragem artificial. No `dev`, 13,6481% das 5.400 janelas contêm pelo menos uma parada futura. Na Fase 5, ocorrência foi classificada na população natural e duração foi regredida somente nas janelas positivas.
 
 ## Limite de uso
 

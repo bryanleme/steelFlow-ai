@@ -56,6 +56,20 @@ def test_public_validator_does_not_import_private_causal_truth() -> None:
     assert not any("generation._ground_truth" in imported for imported in imports)
 
 
+def test_model_package_does_not_import_private_truth_or_post_model_auditor() -> None:
+    imports: list[str] = []
+    for source_path in (ROOT / "src" / "steelflow" / "models").glob("*.py"):
+        tree = ast.parse(source_path.read_text(encoding="utf-8"))
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                imports.extend(alias.name for alias in node.names)
+            elif isinstance(node, ast.ImportFrom):
+                imports.append(node.module or "")
+
+    assert not any("generation._ground_truth" in imported for imported in imports)
+    assert not any("validation.ground_truth_audit" in imported for imported in imports)
+
+
 def test_powerbi_dax_contains_required_measures_and_safe_division() -> None:
     dax = (ROOT / "powerbi" / "measures" / "steelflow_measures.dax").read_text(encoding="utf-8")
     required_measures = (

@@ -5,16 +5,16 @@
 | Perfis reproduzíveis `test`/`dev`/`mvp` | `configs/simulation_*.yaml`, manifest e hash lógico | 1–2 | testes de configuração e duas gerações isoladas |
 | 3 linhas, 3 turnos, 4 graus e 12 produtos | contrato `PlantConfig` e dimensões | 1–2 | validação Pydantic e contratos de dimensão |
 | Geração auditável e particionada | `steelflow.generation`, raw Parquet e manifest | 2 | contagens, seeds derivadas, hashes, memória e tempo |
-| Mecanismos sintéticos e missingness | config/regra isolada e auditoria posterior | 2 e 5 | testes de isolamento e recuperação de ≥4 mecanismos |
+| Mecanismos sintéticos e missingness | config/regra isolada e auditoria posterior | 2 e 5 | teste de imports e auditoria posterior PASS com 6/6 mecanismos |
 | Integridade e qualidade | `steelflow.validation`, contratos e `data_quality.yaml` | 2 | suíte `tests/data_quality` |
 | DuckDB e camadas analíticas | SQL, banco recriável e marts | 3 | 43 checks por perfil, 15 contagens curated e reconciliações |
 | KPIs documentados | catálogo de 17 KPIs e marts por ordem/linha × turno | 3 | contrato completo e testes de fórmula/divisão por zero |
 | Esquema estrela Power BI | 5 dimensões, 8 fatos exportados, relações e DAX | 3 e 7 | 13 CSV/Parquet com contagem e checksum; `.pbix` não declarado |
 | Feature availability e anti-leakage | contrato v1.0.0 e três snapshots `X`/índice/`y` | 4 | 27 checks por perfil: timestamp, pós-processo, ID/target/proxy, hash e `fold_train_only` |
 | Diagnóstico e ajuste de mix | sete tabelas reproduzíveis de tendência, mix, SPC, Pareto e interações | 4 | 8 checks por perfil e relatório com linguagem não causal |
-| Baselines obrigatórios | pipeline de baseline versionado | 5 | relatório no mesmo teste temporal |
-| CatBoost, calibração e quantis | modelos, artefatos e avaliação | 5 | métricas, cobertura, calibração e segmentos |
-| SHAP e explicabilidade | explicações globais, por segmento e cenário | 5 | artefatos e smoke tests |
+| Baselines obrigatórios | pipeline de baseline versionado | 5 | mediana/prior, condicionado, linear/logística e RF no mesmo teste final |
+| CatBoost, calibração e quantis | modelos, artefatos e avaliação | 5 | dez tarefas; Platt em quatro classificadores; MultiQuantile em seis regressões; 50/50 checks |
+| SHAP e explicabilidade | explicações globais, por segmento e cenário | 5 | 30 Parquets TreeSHAP, 218 recortes de métricas e dez cenários por tarefa |
 | NSGA-II com restrições | otimizador, envelopes e alternativas Pareto | 6 | property/constraint tests e recusa OOD |
 | Streamlit com cinco páginas | `app/` e componentes | 7 | smoke test e fluxo de cenário |
 | Aprovação humana e ausência de controle | guardas de interface e avisos | 7 | teste de confirmação e inspeção visual |

@@ -29,8 +29,6 @@ from steelflow.validation.raw_data import validate_raw_dataset
 LOGGER = logging.getLogger("steelflow.cli")
 
 _FUTURE_COMMAND_PHASES = {
-    "train": 5,
-    "evaluate": 5,
     "optimize-demo": 6,
     "app": 7,
 }
@@ -109,6 +107,21 @@ def build_parser() -> argparse.ArgumentParser:
     _add_profile_argument(feature_parser)
     feature_parser.add_argument("--force", action="store_true")
 
+    train_parser = subparsers.add_parser(
+        "train", help="Train temporal baselines, CatBoost, calibration and quantile models."
+    )
+    _add_profile_argument(train_parser)
+    train_parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Replace only the deterministic model run for this exact contract.",
+    )
+
+    evaluate_parser = subparsers.add_parser(
+        "evaluate", help="Evaluate a frozen model run once on the final chronological test."
+    )
+    _add_profile_argument(evaluate_parser)
+
     for command, phase in _FUTURE_COMMAND_PHASES.items():
         future_parser = subparsers.add_parser(
             command,
@@ -147,6 +160,8 @@ def _doctor(project_root: Path | None, *, json_output: bool) -> int:
             "pyarrow",
             "duckdb",
             "catboost",
+            "sklearn",
+            "shap",
             "streamlit",
         )
     }
@@ -259,6 +274,49 @@ def _build_features(profile: str, project_root: Path | None, *, force: bool) -> 
     return 0
 
 
+def _train_models(profile: str, project_root: Path | None, *, force: bool) -> int:
+    from steelflow.models.pipeline import ModelPipelineError, train_models
+
+    root = resolve_project_root(project_root)
+    bundle = load_config_bundle(profile, root)
+    try:
+        result = train_models(bundle, project_root=root, overwrite=force)
+    except ModelPipelineError as exc:
+        raise ValueError(str(exc)) from exc
+    print(
+        f"OK run_id={result.simulation_run_id} profile={profile} tasks={result.task_count} "
+        f"final_test_used=false elapsed_seconds={result.elapsed_seconds:.3f}"
+    )
+    print(f"model_path={result.model_root.relative_to(root)}")
+    print(f"training_manifest={result.manifest_path.relative_to(root)} status=PASS")
+    return 0
+
+
+def _evaluate_models(profile: str, project_root: Path | None) -> int:
+    from steelflow.models.pipeline import ModelPipelineError, evaluate_models
+    from steelflow.validation.ground_truth_audit import audit_causal_recovery
+
+    root = resolve_project_root(project_root)
+    bundle = load_config_bundle(profile, root)
+    try:
+        result = evaluate_models(
+            bundle,
+            project_root=root,
+            causal_auditor=audit_causal_recovery,
+        )
+    except ModelPipelineError as exc:
+        raise ValueError(str(exc)) from exc
+    print(
+        f"OK run_id={result.simulation_run_id} profile={profile} tasks={result.task_count} "
+        f"final_test_evaluations=1 reused={str(result.reused).lower()} "
+        f"engineering_goal_met={str(result.engineering_goal_met).lower()} "
+        f"causal_mechanisms_recovered={result.recovered_mechanisms} "
+        f"elapsed_seconds={result.elapsed_seconds:.3f}"
+    )
+    print(f"evaluation_manifest={result.evaluation_path.relative_to(root)} status=PASS")
+    return 0
+
+
 def run(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -282,6 +340,10 @@ def run(argv: Sequence[str] | None = None) -> int:
             return _diagnose(args.profile, args.project_root, force=args.force)
         if args.command == "build-features":
             return _build_features(args.profile, args.project_root, force=args.force)
+        if args.command == "train":
+            return _train_models(args.profile, args.project_root, force=args.force)
+        if args.command == "evaluate":
+            return _evaluate_models(args.profile, args.project_root)
         if args.command in _FUTURE_COMMAND_PHASES:
             phase = _FUTURE_COMMAND_PHASES[args.command]
             print(

@@ -8,7 +8,7 @@ SteelFlow AI é um *decision-support digital twin* simplificado para uma fábric
 
 ## Estado atual
 
-As Fases 0–4 estabelecem a fundação, o gerador auditável, a camada analítica e o contrato point-in-time:
+As Fases 0–5 estabelecem a fundação, o gerador auditável, a camada analítica, o contrato point-in-time e a modelagem temporal:
 
 - configuração YAML tipada e estrita para os perfis `test`, `dev` e `mvp`;
 - CLI instalável com diagnóstico, validação e hash estável das configurações;
@@ -27,19 +27,22 @@ As Fases 0–4 estabelecem a fundação, o gerador auditável, a camada analíti
 - diagnóstico reproduzível de tendências, mix, Pareto, controle estatístico e interações;
 - três snapshots congelados com `X`, índice e targets fisicamente separados;
 - verificações automáticas de timestamps, IDs, targets, proxies e isolamento causal.
+- quatro janelas cronológicas com embargo de rótulos, baselines e dez tarefas CatBoost;
+- calibração sigmoid exclusiva, P10/P50/P90, TreeSHAP global/segmentado/local e model cards;
+- avaliação final idempotente, métricas segmentadas e auditoria causal posterior 6/6.
 
-Os perfis `test` e `dev` já foram gerados, curados, diagnosticados e transformados em matrizes validadas. Ainda não há modelo preditivo ou recomendação; treinamento só começa após aprovação do Checkpoint 4.
+O perfil `mvp` foi gerado, validado, curado e modelado. A meta de reduzir em 5% o MAE de TBH não foi atingida: a melhora final foi 0,98%. Ainda não há otimização, recomendação, OOD guard ou controle de máquina; esses itens pertencem à Fase 6 após aprovação.
 
 ## Instalação
 
-Python compatível: `>=3.11,<3.15`. A fundação foi verificada no ambiente local indicado no checkpoint. Para as fases de machine learning, a compatibilidade das rodas binárias será reavaliada antes da instalação do extra `all`.
+Python compatível: `>=3.11,<3.15`. A Fase 5 foi verificada no Python 3.14.6 com CatBoost 1.2.10, scikit-learn 1.9.0 e SHAP 0.52.0. O `pymoo` permanece isolado no extra `optimization` até a Fase 6.
 
 ### Windows PowerShell
 
 ```powershell
 python -m venv .venv
 .venv\Scripts\python -m pip install --upgrade pip
-.venv\Scripts\python -m pip install -e ".[data,dev]"
+.venv\Scripts\python -m pip install -e ".[data,ml,dev]"
 .venv\Scripts\python -m steelflow doctor
 .venv\Scripts\python -m pytest
 ```
@@ -49,7 +52,7 @@ python -m venv .venv
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install --upgrade pip
-.venv/bin/python -m pip install -e ".[data,dev]"
+.venv/bin/python -m pip install -e ".[data,ml,dev]"
 .venv/bin/python -m steelflow doctor
 .venv/bin/python -m pytest
 ```
@@ -58,7 +61,7 @@ Se `uv` estiver disponível, o bootstrap equivalente é:
 
 ```bash
 uv venv
-uv pip install -e ".[data,dev]"
+uv pip install -e ".[data,ml,dev]"
 uv run steelflow doctor
 uv run pytest
 ```
@@ -78,6 +81,8 @@ python -m steelflow validate-data --profile dev
 python -m steelflow build-db --profile dev
 python -m steelflow diagnose --profile dev
 python -m steelflow build-features --profile dev
+python -m steelflow train --profile mvp
+python -m steelflow evaluate --profile mvp
 python -m pytest
 python -m ruff check .
 ```
@@ -93,12 +98,12 @@ Quando `make` estiver instalado, `make setup`, `make validate-config`, `make doc
 | `make build-db` | `python -m steelflow build-db --profile dev` | Implementado |
 | `make diagnose` | `python -m steelflow diagnose --profile dev` | Implementado |
 | `make build-features` | `python -m steelflow build-features --profile dev` | Implementado |
-| `make train` | `python -m steelflow train --profile dev` | 5 |
-| `make evaluate` | `python -m steelflow evaluate --profile dev` | 5 |
+| `make train` | `python -m steelflow train --profile dev` | Implementado |
+| `make evaluate` | `python -m steelflow evaluate --profile dev` | Implementado |
 | `make optimize-demo` | `python -m steelflow optimize-demo --profile dev` | 6 |
 | `make app` | `python -m steelflow app --profile dev` | 7 |
 
-Os comandos de modelagem, otimização e aplicativo retornam código diferente de zero e informam claramente a fase em que serão implementados.
+Os comandos de otimização e aplicativo retornam código diferente de zero e informam claramente a fase em que serão implementados.
 
 ## Perfis
 
@@ -108,7 +113,7 @@ Os comandos de modelagem, otimização e aplicativo retornam código diferente d
 | `dev` | 30 dias | desenvolvimento e validação local | 500 ordens / 10.500 tubos |
 | `mvp` | 24 meses | demonstração em escala de portfólio | 12.000 ordens / 250.000 tubos |
 
-Os volumes configurados de `test` e `dev` foram materializados. O perfil `mvp` continua sendo apenas uma configuração até a validação de capacidade e autorização específica de execução.
+Os três perfis foram materializados. O `mvp` produziu 12.594.517 registros públicos em 410,29 s e 0,672 GiB de Parquet raw no ambiente local.
 
 ## Evidência da Fase 2
 
@@ -142,6 +147,12 @@ O banco fica em `data/analytics/<profile>/<simulation_run_id>/`; os arquivos par
 No `dev`, o diagnóstico encontrou uma diferença média descritiva de -0,290 t/h após ajuste pelo mix de produto/grau/linha, 3 sinais de controle de TBH e 24 de qualidade. São associações em simulação, não efeitos causais. O target de parada em ativo × janela de duas horas manteve taxa de 13,648%, sem balanceamento artificial.
 
 Consulte [o relatório diagnóstico](docs/DIAGNOSTIC_REPORT.md) e [o contrato congelado de features](docs/FEATURE_CONTRACT.md).
+
+## Evidência da Fase 5
+
+O `mvp` treinou dez tarefas em 211,09 s com baselines, CatBoost, calibração e seis modelos MultiQuantile. A avaliação cronológica final foi executada uma vez e passou 50/50 verificações. A cobertura P10–P90 ficou entre 77,39% e 82,13%; o ECE dos quatro classificadores calibrados ficou entre 0,00053 e 0,01572. A auditoria posterior recuperou 6/6 mecanismos sintéticos.
+
+O resultado de TBH deve ser lido sem seleção favorável: a melhor baseline obteve MAE 2,158 t/h e o CatBoost, 2,137 t/h, melhora relativa de 0,98%. Portanto, o critério de 5% **não foi atingido**. Consulte [o relatório de modelagem](docs/MODELING_REPORT.md) e os [model cards](docs/MODEL_CARDS.md).
 
 ## Arquitetura planejada
 

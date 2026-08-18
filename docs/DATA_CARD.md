@@ -83,7 +83,7 @@ No perfil `dev`, as contagens observadas foram: 1.421 MCAR, 613 MAR, 2.486 em bl
 
 ## Verdade causal isolada
 
-Parâmetros latentes por tubo são gravados em `data/ground_truth`, fora de `data/raw`. O manifest público registra apenas hash/contagem e a política de acesso. `features`, `models` e `optimization` não podem importar o módulo privado nem ler essa área. A auditoria pós-modelagem será executada separadamente na Fase 5.
+Parâmetros latentes por tubo são gravados em `data/ground_truth`, fora de `data/raw`. O manifest público registra apenas hash/contagem e a política de acesso. `features`, `models` e `optimization` não podem importar o módulo privado nem ler essa área. A auditoria posterior da Fase 5 foi executada pelo módulo isolado após congelamento e recuperou 6/6 mecanismos testados.
 
 ## Qualidade e validação
 

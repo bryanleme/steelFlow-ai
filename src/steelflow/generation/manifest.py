@@ -21,12 +21,16 @@ def dependency_versions() -> dict[str, str]:
     packages = (
         "steelflow-ai",
         "duckdb",
+        "catboost",
+        "joblib",
         "numpy",
         "pandas",
         "polars",
         "pyarrow",
         "pydantic",
         "PyYAML",
+        "scikit-learn",
+        "shap",
     )
     versions: dict[str, str] = {"python": platform.python_version()}
     for package in packages:
