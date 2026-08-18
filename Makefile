@@ -1,6 +1,6 @@
 PYTHON ?= python
 
-.PHONY: setup validate-config doctor generate-dev validate-data build-db diagnose build-features train evaluate optimize-demo test lint app
+.PHONY: setup validate-config doctor generate-dev validate-data build-db diagnose build-features train evaluate optimize-demo audit-portfolio test lint app
 
 setup:
 	$(PYTHON) -m pip install -e ".[all]"
@@ -34,6 +34,9 @@ evaluate:
 
 optimize-demo:
 	$(PYTHON) -m steelflow optimize-demo --profile mvp
+
+audit-portfolio:
+	$(PYTHON) -m steelflow audit-portfolio
 
 test:
 	$(PYTHON) -m pytest

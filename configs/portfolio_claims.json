@@ -1,0 +1,180 @@
+{
+  "schema_version": "1.0",
+  "claims": [
+    {
+      "id": "MVP_PUBLIC_ROWS",
+      "source": "artifacts/samples/phase_5_modeling_summaries.json",
+      "pointer": "/scale/public_rows",
+      "expected": 12594517,
+      "display": "12.594.517",
+      "documents": [
+        "README.md",
+        "docs/CASE_STUDY.md",
+        "docs/LINKEDIN_POST.md",
+        "docs/LINKEDIN_CAROUSEL.md"
+      ]
+    },
+    {
+      "id": "TBH_RELATIVE_IMPROVEMENT",
+      "source": "artifacts/samples/phase_5_modeling_summaries.json",
+      "pointer": "/engineering_goal/relative_improvement",
+      "expected": 0.009836,
+      "display": "0,98%",
+      "documents": [
+        "README.md",
+        "docs/CASE_STUDY.md",
+        "docs/LINKEDIN_POST.md",
+        "docs/LINKEDIN_CAROUSEL.md",
+        "docs/DEMO_SCRIPT.md"
+      ]
+    },
+    {
+      "id": "TBH_ENGINEERING_TARGET",
+      "source": "artifacts/samples/phase_5_modeling_summaries.json",
+      "pointer": "/engineering_goal/target_fraction",
+      "expected": 0.05,
+      "display": "5%",
+      "documents": [
+        "README.md",
+        "docs/CASE_STUDY.md",
+        "docs/LINKEDIN_POST.md",
+        "docs/LINKEDIN_CAROUSEL.md",
+        "docs/DEMO_SCRIPT.md"
+      ]
+    },
+    {
+      "id": "INTERVAL_COVERAGE_MIN",
+      "source": "artifacts/samples/phase_5_modeling_summaries.json",
+      "pointer": "/continuous_targets/tbh/coverage_80",
+      "expected": 0.773889,
+      "display": "77,39%",
+      "documents": [
+        "docs/CASE_STUDY.md",
+        "docs/LINKEDIN_CAROUSEL.md"
+      ]
+    },
+    {
+      "id": "INTERVAL_COVERAGE_MAX",
+      "source": "artifacts/samples/phase_5_modeling_summaries.json",
+      "pointer": "/continuous_targets/energy_intensity/coverage_80",
+      "expected": 0.821338,
+      "display": "82,13%",
+      "documents": [
+        "docs/CASE_STUDY.md",
+        "docs/LINKEDIN_CAROUSEL.md"
+      ]
+    },
+    {
+      "id": "CAUSAL_RECOVERY",
+      "source": "artifacts/samples/phase_5_modeling_summaries.json",
+      "pointer": "/causal_recovery_audit/recovered",
+      "expected": 6,
+      "display": "6/6",
+      "documents": [
+        "docs/CASE_STUDY.md",
+        "docs/CAUSAL_GROUND_TRUTH_AUDIT.md"
+      ]
+    },
+    {
+      "id": "NSGA_EVALUATIONS",
+      "source": "artifacts/samples/phase_6_optimization_summaries.json",
+      "pointer": "/optimizer/evaluations",
+      "expected": 20160,
+      "display": "20.160",
+      "documents": [
+        "docs/CASE_STUDY.md",
+        "docs/LINKEDIN_CAROUSEL.md"
+      ]
+    },
+    {
+      "id": "PUBLISHED_SCENARIOS",
+      "source": "artifacts/samples/phase_6_optimization_summaries.json",
+      "pointer": "/validation/published_scenarios",
+      "expected": 12,
+      "display": "12 cenários",
+      "documents": [
+        "docs/CASE_STUDY.md",
+        "docs/LINKEDIN_POST.md",
+        "docs/LINKEDIN_CAROUSEL.md",
+        "docs/DEMO_SCRIPT.md"
+      ]
+    },
+    {
+      "id": "HARD_CONSTRAINTS",
+      "source": "artifacts/samples/phase_6_optimization_summaries.json",
+      "pointer": "/optimizer/hard_constraints",
+      "expected": 9,
+      "display": "9 restrições",
+      "documents": [
+        "docs/CASE_STUDY.md",
+        "docs/LINKEDIN_POST.md",
+        "docs/LINKEDIN_CAROUSEL.md",
+        "docs/DEMO_SCRIPT.md"
+      ]
+    },
+    {
+      "id": "OOD_PROBES",
+      "source": "artifacts/samples/phase_6_optimization_summaries.json",
+      "pointer": "/validation/ood_probes",
+      "expected": 3,
+      "display": "3 sondas OOD",
+      "documents": [
+        "docs/CASE_STUDY.md",
+        "docs/LINKEDIN_CAROUSEL.md"
+      ]
+    },
+    {
+      "id": "POWERBI_TABLES",
+      "source": "artifacts/samples/phase_7_product_summary.json",
+      "pointer": "/powerbi/tables",
+      "expected": 13,
+      "display": "13 tabelas",
+      "documents": [
+        "docs/CASE_STUDY.md",
+        "docs/LINKEDIN_CAROUSEL.md"
+      ]
+    },
+    {
+      "id": "STREAMLIT_PAGES",
+      "source": "artifacts/samples/phase_7_product_summary.json",
+      "pointer": "/validation/streamlit_page_smokes",
+      "expected": 5,
+      "display": "5 páginas",
+      "documents": [
+        "docs/CASE_STUDY.md",
+        "docs/LINKEDIN_POST.md",
+        "docs/LINKEDIN_CAROUSEL.md"
+      ]
+    }
+  ],
+  "required_disclosures": {
+    "docs/CASE_STUDY.md": [
+      "100% sintético",
+      "sem controle de máquina",
+      "não demonstra causalidade industrial"
+    ],
+    "docs/LINKEDIN_POST.md": [
+      "100% sintético",
+      "sem controle de máquina",
+      "não demonstra causalidade industrial"
+    ],
+    "docs/LINKEDIN_CAROUSEL.md": [
+      "100% sintético",
+      "sem controle de máquina",
+      "não demonstra causalidade industrial"
+    ],
+    "docs/DEMO_SCRIPT.md": [
+      "100% sintético",
+      "sem controle de máquina",
+      "não demonstra causalidade industrial"
+    ]
+  },
+  "forbidden_patterns": [
+    "reduzimos.{0,80}na produção",
+    "ganho realizado de",
+    "roi realizado de",
+    "causalidade industrial comprovada",
+    "conformidade api 5ct certificada",
+    "o sistema controla máquinas"
+  ]
+}

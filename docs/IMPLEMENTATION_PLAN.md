@@ -4,8 +4,8 @@
 
 Construir o SteelFlow AI como protótipo offline e reproduzível de apoio à decisão para uma fábrica fictícia de tubos OCTG sem costura. Todo dado será sintético; todos os limites, internos e simulados. O trabalho avança por checkpoints aprovados, sem iniciar a fase seguinte silenciosamente.
 
-**Status:** Fases 0–7 implementadas e validadas localmente em 2026-08-18; Fase 8
-aguarda aprovação do Checkpoint 7.
+**Status:** Fases 0–8 implementadas e validadas localmente em 2026-08-18; MVP aprovado
+em 17/17 critérios técnicos, aguardando somente o aceite do checkpoint final.
 
 ## Estado inicial auditado em 2026-08-18
 
@@ -110,6 +110,12 @@ foi declarado.
 2. Screenshots e demo preservam avisos sintéticos, não causais e sem comando de máquina.
 3. Uma instalação limpa ou equivalente e a auditoria final fecham o aceite.
 
+**Evidência executada:** um ambiente virtual novo instalou o wheel e todas as
+dependências `.[all]`. Em raiz isolada e sem dados prévios, o `dev` repetiu 529.014
+linhas, o run ID e o hash lógico `ee400a163caf…`; passou 83/83 checks raw, 46/46
+analíticos, 8/8 diagnósticos e 27/27 de features. A auditoria publicável passou 12 claims,
+86 checks de valor/documento e 48 checks de linguagem. A suíte final passou 69 testes.
+
 ## Estimativa preliminar do perfil `mvp`
 
 Esta é uma estimativa de capacidade anterior à execução, não um benchmark. Para aproximadamente 11,8 milhões de linhas factuais configuradas, espera-se:
@@ -139,7 +145,7 @@ A execução real produziu 12.594.517 registros em 410,29 segundos e 0,672 GiB d
 
 As dependências pesadas ficam em extras para que a fundação seja validável sem antecipar incompatibilidades ou custo de instalação das fases futuras.
 
-## Sequência imediata após aprovação
+## Estado final
 
-Fase 8: produzir os materiais de portfólio, auditar cada número e afirmação, validar uma
-instalação limpa ou equivalente e registrar pendências reais sem ampliar o escopo técnico.
+Fases 0–8 concluídas. Os 17 critérios do MVP e as limitações remanescentes estão
+consolidados em `docs/FINAL_ACCEPTANCE_REPORT.md`.

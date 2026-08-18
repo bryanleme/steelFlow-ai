@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "phase": 8,
+  "generated_at_date": "2026-08-18",
+  "status": "PASS",
+  "clean_install": {
+    "environment": "new Python virtual environment",
+    "python": "3.14.6",
+    "package_source": "wheel built from pyproject.toml with .[all] dependencies",
+    "dependency_install": "PASS",
+    "doctor": "PASS",
+    "configuration_profiles": 3,
+    "configuration_validation": "PASS"
+  },
+  "isolated_dev_reproduction": {
+    "project_root_reused_generated_data": false,
+    "simulation_run_id": "sim-dev-v0.1.0-36068c9e490c",
+    "public_rows": 529014,
+    "logical_sha256": "ee400a163caf9248cff647a420b07cdebc5ebdcbe212afd613c4147b3e21cbb1",
+    "reference_hash_match": true,
+    "raw_validation": {"checks": 83, "passed": 83, "failed": 0},
+    "analytics_validation": {"checks": 46, "passed": 46, "failed": 0},
+    "diagnostic_validation": {"checks": 8, "passed": 8, "failed": 0},
+    "feature_validation": {"checks": 27, "passed": 27, "failed": 0},
+    "feature_rows": {
+      "pre_order": 500,
+      "in_process_rolling": 10500,
+      "asset_window": 5400
+    }
+  },
+  "portfolio_audit": {
+    "status": "PASS",
+    "claims": 12,
+    "claim_checks": 86,
+    "language_checks": 48,
+    "documents": 6,
+    "sources": 3
+  },
+  "final_validation": {
+    "pytest": {"passed": 69, "failed": 0, "third_party_deprecation_warnings": 4},
+    "ruff": "PASS",
+    "streamlit_artifact_check": "PASS",
+    "powerbi": {"status": "PASS", "tables": 13, "files": 26, "bytes": 24482012}
+  },
+  "mvp_acceptance": {"criteria": 17, "passed": 17, "failed": 0},
+  "open_limitations": [
+    "synthetic offline prototype; no industrial validation or machine control",
+    "TBH 5% engineering target was not met; observed synthetic improvement was 0.98%",
+    "Power BI Desktop unavailable; no validated .pbix is declared",
+    "four joblib/NumPy third-party deprecation warnings remain"
+  ]
+}

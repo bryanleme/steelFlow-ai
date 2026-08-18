@@ -26,6 +26,7 @@ from steelflow.features.builder import FeatureBuildError, build_feature_package
 from steelflow.generation.generator import GenerationError, generate_dataset
 from steelflow.observability import configure_logging
 from steelflow.reporting.diagnostics import DiagnosticBuildError, build_diagnostic_package
+from steelflow.reporting.portfolio import PortfolioAuditError, audit_portfolio
 from steelflow.validation.raw_data import validate_raw_dataset
 
 LOGGER = logging.getLogger("steelflow.cli")
@@ -146,6 +147,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--check",
         action="store_true",
         help="Validate application artifacts without starting the web server.",
+    )
+
+    subparsers.add_parser(
+        "audit-portfolio",
+        help="Verify published numbers and mandatory synthetic-scope language.",
     )
 
     return parser
@@ -444,12 +450,17 @@ def run(argv: Sequence[str] | None = None) -> int:
                 headless=args.headless,
                 check_only=args.check,
             )
+        if args.command == "audit-portfolio":
+            root = resolve_project_root(args.project_root)
+            print(json.dumps(audit_portfolio(root), ensure_ascii=False, indent=2, sort_keys=True))
+            return 0
     except (
         ConfigError,
         DatabaseBuildError,
         DiagnosticBuildError,
         FeatureBuildError,
         GenerationError,
+        PortfolioAuditError,
         StaleAnalyticsError,
         ValueError,
     ) as exc:

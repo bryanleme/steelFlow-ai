@@ -20,5 +20,5 @@
 | Streamlit com cinco páginas | `app/` e componentes | 7 | PASS: cinco AppTests com artefatos `mvp` e screenshots reais |
 | Aprovação humana e ausência de controle | guardas de interface e avisos | 7 | PASS: recusa sem aceite, confirmação explícita e `machine_command=false` |
 | Pacote Power BI | exports, relações, Power Query, tema, wireframe e DAX | 7 | PASS: validador de JSON/DAX e SHA-256 dos 26 exports |
-| Portfólio honesto/rastreável | cards, case, LinkedIn, carrossel e demo | 8 | auditoria automática de números e linguagem |
-| Instalação reproduzível | README, `pyproject.toml`, Makefile opcional | 1 e 8 | ambiente limpo/equivalente e comandos documentados |
+| Portfólio honesto/rastreável | cards, case, LinkedIn, carrossel e demo | 8 | PASS: 12 claims, 86 checks numéricos/documentais e 48 checks de linguagem |
+| Instalação reproduzível | README, `pyproject.toml`, Makefile opcional | 1 e 8 | PASS: venv novo, wheel + `.[all]`, `dev` isolado com hash repetido e 83/83 checks |

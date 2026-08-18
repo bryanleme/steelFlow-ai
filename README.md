@@ -2,14 +2,15 @@
 
 > Protótipo educacional offline, construído exclusivamente com dados sintéticos. Os limites são internos e simulados; o sistema não é validado pela API 5CT, não controla máquinas e não fornece instruções para operação industrial real.
 
-SteelFlow AI é um *decision-support digital twin* simplificado para uma fábrica fictícia de tubos OCTG de aço sem costura. O produto demonstrará como separar efeito de mix, estimar produtividade, qualidade, energia e risco com incerteza e comparar alternativas condicionais sob restrições — sempre com aprovação humana.
+SteelFlow AI é um *decision-support digital twin* simplificado para uma fábrica fictícia de tubos OCTG de aço sem costura. O produto demonstra como separar efeito de mix, estimar produtividade, qualidade, energia e risco com incerteza e comparar alternativas condicionais sob restrições — sempre com aprovação humana.
 
-**English summary:** SteelFlow AI is an offline, reproducible portfolio prototype built entirely from synthetic data. It will combine temporal machine learning, calibrated uncertainty, explainability and constrained Pareto scenarios. It is not a validated physical digital twin and never controls production equipment.
+**English summary:** SteelFlow AI is an offline, reproducible portfolio prototype built entirely from synthetic data. It combines temporal machine learning, calibrated uncertainty, explainability and constrained Pareto scenarios. It is not a validated physical digital twin and never controls production equipment.
 
 ## Estado atual
 
-As Fases 0–7 estabelecem a fundação, o gerador auditável, a camada analítica, o
-contrato point-in-time, a modelagem temporal, a otimização segura e o produto:
+As Fases 0–8 entregam a fundação, o gerador auditável, a camada analítica, o
+contrato point-in-time, a modelagem temporal, a otimização segura, o produto e o pacote
+final de portfólio:
 
 - configuração YAML tipada e estrita para os perfis `test`, `dev` e `mvp`;
 - CLI instalável com diagnóstico, validação e hash estável das configurações;
@@ -37,6 +38,9 @@ contrato point-in-time, a modelagem temporal, a otimização segura e o produto:
 - aplicativo Streamlit responsivo com cinco páginas, consultas DuckDB agregadas e cache;
 - laboratório de cenários com controles contratados, confirmação humana e exportação JSON/CSV;
 - pacote Power BI com 13 tabelas, 26 arquivos verificados, tema, wireframe e checklist.
+- case study, post, carrossel e roteiro de demonstração com linguagem responsável;
+- auditoria executável que rastreia números publicados até artefatos JSON versionados;
+- data card, model card, auditoria causal, riscos e aceitação final consolidados.
 
 O perfil `mvp` foi gerado, validado, curado, modelado, otimizado e integrado ao
 produto em três contextos demonstrativos. A meta de reduzir em 5% o MAE de TBH não
@@ -97,6 +101,7 @@ python -m steelflow evaluate --profile mvp
 python -m steelflow optimize-demo --profile mvp
 python -m steelflow app --profile mvp --check
 python -m steelflow app --profile mvp
+python -m steelflow audit-portfolio
 python -m pytest
 python -m ruff check .
 ```
@@ -116,6 +121,7 @@ Quando `make` estiver instalado, `make setup`, `make validate-config`, `make doc
 | `make evaluate` | `python -m steelflow evaluate --profile dev` | Implementado |
 | `make optimize-demo` | `python -m steelflow optimize-demo --profile mvp` | Implementado |
 | `make app` | `python -m steelflow app --profile mvp` | Implementado |
+| `make audit-portfolio` | `python -m steelflow audit-portfolio` | Implementado |
 
 `app --check` valida os artefatos sem abrir servidor. `app` inicia as cinco páginas em
 `http://127.0.0.1:8501`; se algum artefato estiver ausente, a tela apresenta os comandos
@@ -129,7 +135,7 @@ de recuperação em vez de um traceback.
 | `dev` | 30 dias | desenvolvimento e validação local | 500 ordens / 10.500 tubos |
 | `mvp` | 24 meses | demonstração em escala de portfólio | 12.000 ordens / 250.000 tubos |
 
-Os três perfis foram materializados. O `mvp` produziu 12.594.517 registros públicos em 410,29 s e 0,672 GiB de Parquet raw no ambiente local.
+Os três perfis foram materializados. O `mvp` produziu 12.594.517 registros públicos <!-- [claim:MVP_PUBLIC_ROWS] --> em 410,29 s e 0,672 GiB de Parquet raw no ambiente local.
 
 ## Evidência da Fase 2
 
@@ -168,7 +174,7 @@ Consulte [o relatório diagnóstico](docs/DIAGNOSTIC_REPORT.md) e [o contrato co
 
 O `mvp` treinou dez tarefas em 211,09 s com baselines, CatBoost, calibração e seis modelos MultiQuantile. A avaliação cronológica final foi executada uma vez e passou 50/50 verificações. A cobertura P10–P90 ficou entre 77,39% e 82,13%; o ECE dos quatro classificadores calibrados ficou entre 0,00053 e 0,01572. A auditoria posterior recuperou 6/6 mecanismos sintéticos.
 
-O resultado de TBH deve ser lido sem seleção favorável: a melhor baseline obteve MAE 2,158 t/h e o CatBoost, 2,137 t/h, melhora relativa de 0,98%. Portanto, o critério de 5% **não foi atingido**. Consulte [o relatório de modelagem](docs/MODELING_REPORT.md) e os [model cards](docs/MODEL_CARDS.md).
+O resultado de TBH deve ser lido sem seleção favorável: a melhor baseline obteve MAE 2,158 t/h e o CatBoost, 2,137 t/h, melhora relativa de 0,98% <!-- [claim:TBH_RELATIVE_IMPROVEMENT] -->. Portanto, o critério de 5% <!-- [claim:TBH_ENGINEERING_TARGET] --> **não foi atingido**. Consulte [o relatório de modelagem](docs/MODELING_REPORT.md), o [model card do sistema](docs/MODEL_CARD.md) e os [cards consolidados](docs/MODEL_CARDS.md).
 
 ## Evidência da Fase 6
 
@@ -185,7 +191,18 @@ validou 5 dimensões, 8 fatos e os SHA-256 dos 26 arquivos, totalizando 24.482.0
 Nenhum `.pbix` foi declarado. Consulte o [relatório do produto](docs/PRODUCT_REPORT.md) e
 o [pacote Power BI](powerbi/README.md).
 
-## Arquitetura implementada até a Fase 7
+## Entrega de portfólio da Fase 8
+
+O [estudo de caso](docs/CASE_STUDY.md), o [post](docs/LINKEDIN_POST.md), o
+[carrossel](docs/LINKEDIN_CAROUSEL.md) e o [roteiro de demonstração](docs/DEMO_SCRIPT.md)
+usam somente números ligados a evidências versionadas. `audit-portfolio` verifica os
+ponteiros JSON, a representação publicada, os avisos obrigatórios e expressões proibidas.
+A [auditoria causal](docs/CAUSAL_GROUND_TRUTH_AUDIT.md) documenta por que a recuperação
+sintética posterior não equivale a causalidade industrial.
+O [relatório final de aceite](docs/FINAL_ACCEPTANCE_REPORT.md) reúne a evidência dos 17
+critérios e todas as limitações que permanecem abertas.
+
+## Arquitetura implementada até a Fase 8
 
 ```text
 Versioned YAML
@@ -226,4 +243,4 @@ Consulte [o plano de implementação](docs/IMPLEMENTATION_PLAN.md), [a rastreabi
 
 ## Licença e aviso
 
-O código é disponibilizado sob a licença MIT. Dados, métricas e cenários produzidos pelo projeto serão sintéticos e não representarão operação, ganho, ROI ou conformidade de uma fábrica real.
+O código é disponibilizado sob a licença MIT. Dados, métricas e cenários produzidos pelo projeto são sintéticos e não representam operação, ganho, ROI ou conformidade de uma fábrica real.

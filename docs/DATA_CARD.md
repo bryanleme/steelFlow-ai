@@ -25,7 +25,8 @@ O conjunto não deve ser usado para controle de equipamento, especificação de 
 | `dev` | 2025-01-01 a 2025-01-30 | 500 | 10.500 | 75.600 | 336.000 | 63.000 | 820 |
 | `mvp` | 2024-01-01 a 2025-12-31 | 12.000 | 250.000 | 1.800.000 | 8.000.000 | 1.500.000 | 20.000 |
 
-`test` e `dev` foram materializados e validados em 2026-08-18. `mvp` continua configurado, mas não foi executado.
+Os três perfis foram materializados e validados em 2026-08-18. O `mvp` percorreu
+geração, curadoria, features, modelagem, avaliação, otimização e integração ao produto.
 
 ## Conteúdo
 
@@ -121,6 +122,17 @@ Esses valores são propriedades desta simulação e não constituem benchmark ou
 - O gerador é um modelo substituto educacional, não uma física completa do processo.
 - Correlações foram projetadas e não demonstram causalidade industrial.
 - Calendário, receitas, química e limites foram simplificados.
-- O perfil `dev` não mede estabilidade de longo prazo; drift completo exige `mvp`.
-- O suporte para eventos raros será reavaliado por janela temporal e segmento antes da modelagem.
+- O perfil `dev` não mede estabilidade de longo prazo; a avaliação temporal principal usa `mvp`.
+- Eventos raros têm suporte desigual; refugo manteve PR-AUC baixa mesmo no `mvp`.
 - Não há dados pessoais nem ranking de operadores.
+
+## Execução `mvp` e produtos derivados
+
+O `mvp` gerou 12.594.517 registros públicos, 0,672 GiB de Parquet raw e foi usado para
+dez tarefas preditivas. A avaliação final foi congelada antes da auditoria causal. Os
+cenários derivados têm barreira OOD, nove restrições duras e aprovação humana, mas não
+são contrafactuais nem instruções de processo.
+
+Consulte `MODEL_CARD.md`, `CAUSAL_GROUND_TRUTH_AUDIT.md`, `SCENARIO_CONTRACT.md` e
+`FINAL_ACCEPTANCE_REPORT.md` para desempenho, isolamento, uso pretendido e critérios de
+aceitação.
