@@ -9,7 +9,9 @@ import pytest
 from steelflow.config import load_config_bundle
 from steelflow.curation.database import DatabaseBuildError, build_analytics_database
 from steelflow.curation.exports import POWERBI_EXPORTS
+from steelflow.features.builder import build_feature_package
 from steelflow.generation.generator import generate_dataset
+from steelflow.reporting.diagnostics import build_diagnostic_package
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -45,6 +47,48 @@ def test_test_profile_builds_reconciled_database_and_powerbi_package(tmp_path: P
         for table_name in POWERBI_EXPORTS
         for extension in ("parquet", "csv")
     )
+
+    diagnostics = build_diagnostic_package(
+        bundle,
+        project_root=ROOT,
+        analytics_build_dir=first.database_path.parent,
+        output_base=tmp_path / "first" / "diagnostics",
+    )
+    diagnostic_validation = json.loads(diagnostics.validation_path.read_text(encoding="utf-8"))
+    assert diagnostic_validation["status"] == "PASS"
+    assert set(diagnostics.table_rows) == {
+        "daily_trend",
+        "loss_pareto",
+        "mix_adjustment",
+        "process_interactions",
+        "segment_associations",
+        "spc_quality",
+        "spc_tbh",
+    }
+
+    features = build_feature_package(
+        bundle,
+        project_root=ROOT,
+        analytics_build_dir=first.database_path.parent,
+        output_base=tmp_path / "first" / "features",
+    )
+    feature_validation = json.loads(features.validation_path.read_text(encoding="utf-8"))
+    assert feature_validation["status"] == "PASS"
+    assert features.snapshot_rows == {
+        "asset_window": 360,
+        "in_process_rolling": 480,
+        "pre_order": 24,
+    }
+    feature_connection = duckdb.connect()
+    x_columns = {
+        row[0]
+        for row in feature_connection.execute(
+            "DESCRIBE SELECT * FROM read_parquet(?)",
+            [str(features.feature_root / "pre_order" / "X.parquet")],
+        ).fetchall()
+    }
+    feature_connection.close()
+    assert not {"order_id", "tube_id", "simulation_run_id", "tbh", "fpy"} & x_columns
 
     connection = duckdb.connect(str(first.database_path), read_only=True)
     try:
@@ -109,6 +153,32 @@ def test_test_profile_builds_reconciled_database_and_powerbi_package(tmp_path: P
         for table_name, record in second_export_manifest["tables"].items()
     }
     assert first_hashes == second_hashes
+
+    second_diagnostics = build_diagnostic_package(
+        bundle,
+        project_root=ROOT,
+        analytics_build_dir=second.database_path.parent,
+        output_base=tmp_path / "second" / "diagnostics",
+    )
+    first_diagnostic_manifest = json.loads(diagnostics.manifest_path.read_text(encoding="utf-8"))
+    second_diagnostic_manifest = json.loads(
+        second_diagnostics.manifest_path.read_text(encoding="utf-8")
+    )
+    assert {
+        name: record["files"] for name, record in first_diagnostic_manifest["tables"].items()
+    } == {name: record["files"] for name, record in second_diagnostic_manifest["tables"].items()}
+
+    second_features = build_feature_package(
+        bundle,
+        project_root=ROOT,
+        analytics_build_dir=second.database_path.parent,
+        output_base=tmp_path / "second" / "features",
+    )
+    first_feature_manifest = json.loads(features.manifest_path.read_text(encoding="utf-8"))
+    second_feature_manifest = json.loads(second_features.manifest_path.read_text(encoding="utf-8"))
+    assert {
+        name: record["files"] for name, record in first_feature_manifest["snapshots"].items()
+    } == {name: record["files"] for name, record in second_feature_manifest["snapshots"].items()}
 
 
 def test_sql_contracts_never_reference_private_causal_truth() -> None:

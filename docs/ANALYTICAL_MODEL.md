@@ -11,7 +11,7 @@ Transformar os Parquets públicos e validados da Fase 2 em um banco DuckDB recri
 | `raw` | views | leitura direta dos Parquets imutáveis da execução |
 | `curated` | tabelas | fronteira estável das 15 tabelas públicas, com índices de unicidade |
 | `analytics` | dimensões, fatos, marts e views | KPIs, reconciliações, Pareto, condição de ativos e exportação |
-| `features` | tabelas preliminares | snapshots pré-ordem e durante laminação, sem targets pós-processo |
+| `features` | tabelas point-in-time | snapshots pré-ordem, durante laminação e ativo × janela, sem targets pós-processo |
 | `model_outputs` | tabelas vazias | contrato para previsões e cenários de fases futuras |
 | `metadata` | tabelas | linhagem da construção e grãos contratados |
 
@@ -25,11 +25,15 @@ O arquivo final fica em `data/analytics/<profile>/<simulation_run_id>/steelflow.
 - O catálogo `metadata.table_contracts` registra grão, chave primária e regra de partição da camada curated.
 - O catálogo `analytics.kpi_catalog` é a versão executável de `docs/KPI_CATALOG.md`.
 
-## Snapshots temporais preliminares
+## Snapshots temporais
 
-`features.pre_order_snapshot` contém uma linha por ordem no instante em que ordem e lote já estão disponíveis. `features.in_process_rolling_snapshot` contém uma linha por tubo ao fim da laminação e limita sensores a `feature_available_at_ts <= snapshot_ts`.
+`features.pre_order_snapshot` contém uma linha por ordem no instante em que ordem e lote já estão disponíveis. `features.in_process_rolling_snapshot` contém uma linha por tubo ao fim da laminação e limita sensores a `feature_available_at_ts <= snapshot_ts`. `features.asset_window_snapshot` cria uma linha por ativo e janela de duas horas, usando somente históricos encerrados antes do início da janela.
 
-Esses snapshots comprovam a fronteira point-in-time da arquitetura, mas não são ainda o contrato de treinamento congelado. A Fase 4 removerá IDs/proxies, fará diagnósticos de mix e congelará matrizes e disponibilidade antes da modelagem.
+O contrato v1.0.0 seleciona apenas colunas disponíveis, remove IDs/targets/proxies de `X` e grava índice e targets em artefatos separados. Transformadores continuam inexistentes e, quando introduzidos, deverão ser ajustados somente no fold de treino.
+
+## Diagnósticos
+
+Seis tabelas `analytics.diagnostic_*` e o Pareto de perdas cobrem tendências, ajuste de mix, SPC, interações e associações segmentadas. São objetos retrospectivos; particularmente, o baseline de mix de período completo é proibido como feature.
 
 ## Auditoria e reconciliação
 
@@ -48,6 +52,6 @@ A construção falha se a validação raw falhar. Depois do SQL e antes da promo
 ## Limitações atuais
 
 - `model_outputs` está vazio até as Fases 5–6; não há previsão de risco nem recomendação nesta fase.
-- Os snapshots da Fase 3 não autorizam treinamento e ainda serão refinados na Fase 4.
+- O contrato de features está congelado, mas nenhuma transformação ou divisão temporal foi ajustada ainda.
 - O pacote Power BI entrega CSV/Parquet, relações, consultas e DAX como código verificável. Nenhum `.pbix` foi criado ou declarado.
 - Todos os números são medições de uma simulação offline; não expressam ganho, ROI, conformidade ou causalidade industrial real.

@@ -8,7 +8,7 @@ SteelFlow AI é um *decision-support digital twin* simplificado para uma fábric
 
 ## Estado atual
 
-As Fases 0–3 estabelecem a fundação, o gerador auditável e a camada analítica:
+As Fases 0–4 estabelecem a fundação, o gerador auditável, a camada analítica e o contrato point-in-time:
 
 - configuração YAML tipada e estrita para os perfis `test`, `dev` e `mvp`;
 - CLI instalável com diagnóstico, validação e hash estável das configurações;
@@ -24,8 +24,11 @@ As Fases 0–3 estabelecem a fundação, o gerador auditável e a camada analít
 - fatos, dimensões e marts reconciliados nos grãos por ordem e data × linha × turno;
 - catálogo executável e documentação de 17 KPIs, incluindo indicadores ainda planejados;
 - 13 tabelas estrela exportadas em CSV e Parquet para Power BI, com hashes e DAX.
+- diagnóstico reproduzível de tendências, mix, Pareto, controle estatístico e interações;
+- três snapshots congelados com `X`, índice e targets fisicamente separados;
+- verificações automáticas de timestamps, IDs, targets, proxies e isolamento causal.
 
-Os perfis `test` e `dev` já foram gerados, curados e validados. A próxima fase aprovada deverá tratar diagnóstico, ajuste de mix e congelamento do contrato de features; ainda não há modelo preditivo ou recomendação.
+Os perfis `test` e `dev` já foram gerados, curados, diagnosticados e transformados em matrizes validadas. Ainda não há modelo preditivo ou recomendação; treinamento só começa após aprovação do Checkpoint 4.
 
 ## Instalação
 
@@ -73,6 +76,8 @@ python -m steelflow build-db --profile test
 python -m steelflow generate --profile dev
 python -m steelflow validate-data --profile dev
 python -m steelflow build-db --profile dev
+python -m steelflow diagnose --profile dev
+python -m steelflow build-features --profile dev
 python -m pytest
 python -m ruff check .
 ```
@@ -86,6 +91,8 @@ Quando `make` estiver instalado, `make setup`, `make validate-config`, `make doc
 | `make generate-dev` | `python -m steelflow generate --profile dev` | Implementado |
 | `make validate-data` | `python -m steelflow validate-data --profile dev` | Implementado |
 | `make build-db` | `python -m steelflow build-db --profile dev` | Implementado |
+| `make diagnose` | `python -m steelflow diagnose --profile dev` | Implementado |
+| `make build-features` | `python -m steelflow build-features --profile dev` | Implementado |
 | `make train` | `python -m steelflow train --profile dev` | 5 |
 | `make evaluate` | `python -m steelflow evaluate --profile dev` | 5 |
 | `make optimize-demo` | `python -m steelflow optimize-demo --profile dev` | 6 |
@@ -124,6 +131,17 @@ Os arquivos são gravados em `data/raw/<profile>/<simulation_run_id>/`; a verdad
 O `dev` reconciliou 1.733,672 t boas e 90,419 h produtivas, produzindo TBH sintético global de 19,174 t/h. Esses números são evidências técnicas da simulação, não ganhos reais nem benchmarks universais.
 
 O banco fica em `data/analytics/<profile>/<simulation_run_id>/`; os arquivos para Power BI, em `powerbi/exports/<profile>/<simulation_run_id>/`. Ambos são recriáveis e ignorados pelo Git. Consulte [o modelo analítico](docs/ANALYTICAL_MODEL.md), [o catálogo de KPIs](docs/KPI_CATALOG.md) e [as instruções do Power BI](powerbi/README.md).
+
+## Evidência da Fase 4
+
+| Perfil | Validação DuckDB | Diagnóstico | Snapshots (`pre_order` / rolling / ativo) | Validação de features |
+|---|---:|---:|---:|---:|
+| `test` | 46/46 | 8/8; 375 linhas | 24 / 480 / 360 | 27/27 |
+| `dev` | 46/46 | 8/8; 4.549 linhas | 500 / 10.500 / 5.400 | 27/27 |
+
+No `dev`, o diagnóstico encontrou uma diferença média descritiva de -0,290 t/h após ajuste pelo mix de produto/grau/linha, 3 sinais de controle de TBH e 24 de qualidade. São associações em simulação, não efeitos causais. O target de parada em ativo × janela de duas horas manteve taxa de 13,648%, sem balanceamento artificial.
+
+Consulte [o relatório diagnóstico](docs/DIAGNOSTIC_REPORT.md) e [o contrato congelado de features](docs/FEATURE_CONTRACT.md).
 
 ## Arquitetura planejada
 

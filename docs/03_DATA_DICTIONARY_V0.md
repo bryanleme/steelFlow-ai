@@ -49,7 +49,7 @@
 - Tempo: `actual_start_ts`, `actual_end_ts`.
 - Resultado: `tube_mass_kg`, `approved_first_pass`, `disposition`, `good_mass_t`, `productive_hours`, `actual_tph`.
 
-`actual_tph` é um resultado pós-processo por tubo. O KPI executivo TBH será reconciliado na Fase 3 como soma de `good_mass_t` dividida pela soma de `productive_hours`, nunca como média simples de `actual_tph`.
+`actual_tph` é um resultado pós-processo por tubo. O KPI executivo TBH é reconciliado como soma de `good_mass_t` dividida pela soma de `productive_hours`, nunca como média simples de `actual_tph`.
 
 ### `process_parameters`
 

@@ -19,8 +19,11 @@ from steelflow.config import (
     resolve_project_root,
 )
 from steelflow.curation.database import DatabaseBuildError, build_analytics_database
+from steelflow.curation.lineage import StaleAnalyticsError
+from steelflow.features.builder import FeatureBuildError, build_feature_package
 from steelflow.generation.generator import GenerationError, generate_dataset
 from steelflow.observability import configure_logging
+from steelflow.reporting.diagnostics import DiagnosticBuildError, build_diagnostic_package
 from steelflow.validation.raw_data import validate_raw_dataset
 
 LOGGER = logging.getLogger("steelflow.cli")
@@ -93,6 +96,18 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Replace only the analytical build for this exact deterministic run.",
     )
+
+    diagnose_parser = subparsers.add_parser(
+        "diagnose", help="Build validated descriptive diagnostics from the current DuckDB."
+    )
+    _add_profile_argument(diagnose_parser)
+    diagnose_parser.add_argument("--force", action="store_true")
+
+    feature_parser = subparsers.add_parser(
+        "build-features", help="Build validated frozen point-in-time feature packages."
+    )
+    _add_profile_argument(feature_parser)
+    feature_parser.add_argument("--force", action="store_true")
 
     for command, phase in _FUTURE_COMMAND_PHASES.items():
         future_parser = subparsers.add_parser(
@@ -206,6 +221,44 @@ def _build_database(profile: str, project_root: Path | None, *, force: bool) -> 
     return 0
 
 
+def _diagnose(profile: str, project_root: Path | None, *, force: bool) -> int:
+    root = resolve_project_root(project_root)
+    bundle = load_config_bundle(profile, root)
+    result = build_diagnostic_package(
+        bundle,
+        project_root=root,
+        overwrite=force,
+    )
+    print(
+        f"OK run_id={result.simulation_run_id} profile={profile} "
+        f"diagnostic_tables={len(result.table_rows)} rows={sum(result.table_rows.values())} "
+        f"elapsed_seconds={result.elapsed_seconds:.3f}"
+    )
+    print(f"diagnostic_path={result.diagnostic_root.relative_to(root)}")
+    print(f"validation_path={result.validation_path.relative_to(root)} status=PASS")
+    return 0
+
+
+def _build_features(profile: str, project_root: Path | None, *, force: bool) -> int:
+    root = resolve_project_root(project_root)
+    bundle = load_config_bundle(profile, root)
+    result = build_feature_package(
+        bundle,
+        project_root=root,
+        overwrite=force,
+    )
+    snapshot_rows = ",".join(
+        f"{name}:{rows}" for name, rows in sorted(result.snapshot_rows.items())
+    )
+    print(
+        f"OK run_id={result.simulation_run_id} profile={profile} "
+        f"snapshots={snapshot_rows} elapsed_seconds={result.elapsed_seconds:.3f}"
+    )
+    print(f"feature_path={result.feature_root.relative_to(root)}")
+    print(f"validation_path={result.validation_path.relative_to(root)} status=PASS")
+    return 0
+
+
 def run(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -225,6 +278,10 @@ def run(argv: Sequence[str] | None = None) -> int:
             return _validate_data(args.profile, args.project_root)
         if args.command == "build-db":
             return _build_database(args.profile, args.project_root, force=args.force)
+        if args.command == "diagnose":
+            return _diagnose(args.profile, args.project_root, force=args.force)
+        if args.command == "build-features":
+            return _build_features(args.profile, args.project_root, force=args.force)
         if args.command in _FUTURE_COMMAND_PHASES:
             phase = _FUTURE_COMMAND_PHASES[args.command]
             print(
@@ -233,7 +290,15 @@ def run(argv: Sequence[str] | None = None) -> int:
                 file=sys.stderr,
             )
             return 2
-    except (ConfigError, DatabaseBuildError, GenerationError, ValueError) as exc:
+    except (
+        ConfigError,
+        DatabaseBuildError,
+        DiagnosticBuildError,
+        FeatureBuildError,
+        GenerationError,
+        StaleAnalyticsError,
+        ValueError,
+    ) as exc:
         LOGGER.error("command_failed", extra={"command": args.command, "reason": str(exc)})
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1

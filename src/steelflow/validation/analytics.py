@@ -309,6 +309,14 @@ def validate_analytics_database(
             "WHERE feature_max_source_ts > snapshot_ts",
             "In-process features must be available no later than the rolling snapshot.",
         )
+        _add_zero_check(
+            report,
+            connection,
+            "feature_time.asset_window",
+            "SELECT count(*) FROM features.asset_window_snapshot "
+            "WHERE feature_max_source_ts > snapshot_ts",
+            "Historical asset-window features must stop at the prediction snapshot.",
+        )
         forbidden_columns = {
             "approved_first_pass",
             "disposition",
@@ -330,7 +338,7 @@ def validate_analytics_database(
             passed=not leaked_columns,
             observed=leaked_columns,
             expected=[],
-            detail="Phase 3 snapshots must not expose targets or post-process fields.",
+            detail="Point-in-time snapshots must not expose targets or post-process fields.",
         )
         report.add(
             "feature_count.pre_order",
@@ -351,6 +359,39 @@ def validate_analytics_database(
             ),
             expected=int(raw_manifest["tables"]["tubes"]["rows"]),
             detail="There must be one rolling snapshot per tube.",
+        )
+        expected_asset_windows = bundle.simulation.period.duration_days * 15 * 12
+        observed_asset_windows = int(
+            _scalar(connection, "SELECT count(*) FROM features.asset_window_snapshot")
+        )
+        report.add(
+            "feature_count.asset_window",
+            passed=observed_asset_windows == expected_asset_windows,
+            observed=observed_asset_windows,
+            expected=expected_asset_windows,
+            detail="There must be one asset snapshot per date, synthetic asset and shift.",
+        )
+        diagnostic_tables = {
+            row[0]
+            for row in connection.execute(
+                "SELECT table_name FROM information_schema.tables "
+                "WHERE table_schema='analytics' AND table_name LIKE 'diagnostic_%'"
+            ).fetchall()
+        }
+        expected_diagnostic_tables = {
+            "diagnostic_daily_trend",
+            "diagnostic_mix_adjustment",
+            "diagnostic_process_interactions",
+            "diagnostic_segment_associations",
+            "diagnostic_spc_quality",
+            "diagnostic_spc_tbh",
+        }
+        report.add(
+            "diagnostics.required_tables",
+            passed=diagnostic_tables == expected_diagnostic_tables,
+            observed=sorted(diagnostic_tables),
+            expected=sorted(expected_diagnostic_tables),
+            detail="Phase 4 analytical diagnostics must be materialized reproducibly.",
         )
 
         star_fk_checks = (

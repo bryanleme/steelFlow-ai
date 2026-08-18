@@ -1,0 +1,92 @@
+schema_version: "1.0"
+contract_version: "1.0.0"
+preprocessing_fit_scope: fold_train_only
+snapshots:
+  - name: pre_order
+    entity_grain: order
+    source_table: features.pre_order_snapshot
+    entity_id_column: order_id
+    snapshot_column: snapshot_ts
+    max_source_timestamp_column: feature_max_source_ts
+    ordered_by: order_id
+    features:
+      - {name: product_code, dtype: category, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: grade_family, dtype: category, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: line_id, dtype: category, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: shift_id, dtype: category, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: committed_sequence, dtype: integer, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: ambient_temperature_c, dtype: float, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: carbon_pct, dtype: float, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+      - {name: manganese_pct, dtype: float, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+      - {name: chromium_pct, dtype: float, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+      - {name: molybdenum_pct, dtype: float, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+      - {name: billet_diameter_mm, dtype: float, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+      - {name: billet_mass_kg, dtype: float, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+    targets: [tbh, fpy, energy_per_good_tonne_kwh_t, rework_rate, scrap_rate]
+
+  - name: in_process_rolling
+    entity_grain: tube
+    source_table: features.in_process_rolling_snapshot
+    entity_id_column: tube_id
+    snapshot_column: snapshot_ts
+    max_source_timestamp_column: feature_max_source_ts
+    ordered_by: tube_id
+    features:
+      - {name: product_code, dtype: category, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: grade_family, dtype: category, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: line_id, dtype: category, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: shift_id, dtype: category, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: ambient_temperature_c, dtype: float, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: tool_wear_index, dtype: float, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+      - {name: hours_since_maintenance, dtype: float, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+      - {name: maintenance_deferred, dtype: boolean, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+      - {name: sensor_degradation_index, dtype: float, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+      - {name: reheat_zone_1_temp_c, dtype: float, availability_stage: IN_PROCESS_REHEAT, data_class: CONTROLLABLE, recommendable: true}
+      - {name: reheat_zone_2_temp_c, dtype: float, availability_stage: IN_PROCESS_REHEAT, data_class: CONTROLLABLE, recommendable: true}
+      - {name: reheat_zone_3_temp_c, dtype: float, availability_stage: IN_PROCESS_REHEAT, data_class: CONTROLLABLE, recommendable: true}
+      - {name: soak_time_min, dtype: float, availability_stage: IN_PROCESS_REHEAT, data_class: CONTROLLABLE, recommendable: true}
+      - {name: reheat_exit_temp_c, dtype: float, availability_stage: IN_PROCESS_REHEAT, data_class: CONTROLLABLE, recommendable: true}
+      - {name: thermal_uniformity_index, dtype: float, availability_stage: IN_PROCESS_REHEAT, data_class: MEDIATOR, recommendable: false}
+      - {name: roll_speed_rpm, dtype: float, availability_stage: IN_PROCESS_ROLLING, data_class: CONTROLLABLE, recommendable: true}
+      - {name: roll_gap_mm, dtype: float, availability_stage: IN_PROCESS_ROLLING, data_class: CONTROLLABLE, recommendable: true}
+      - {name: mandrel_position_mm, dtype: float, availability_stage: IN_PROCESS_ROLLING, data_class: CONTROLLABLE, recommendable: true}
+      - {name: reduction_rate_pct, dtype: float, availability_stage: IN_PROCESS_ROLLING, data_class: CONTROLLABLE, recommendable: true}
+      - {name: exit_speed_m_s, dtype: float, availability_stage: IN_PROCESS_ROLLING, data_class: CONTROLLABLE, recommendable: true}
+      - {name: lubrication_flow_l_min, dtype: float, availability_stage: IN_PROCESS_ROLLING, data_class: CONTROLLABLE, recommendable: true}
+      - {name: rolling_load_index, dtype: float, availability_stage: IN_PROCESS_ROLLING, data_class: MEDIATOR, recommendable: false}
+      - {name: observed_furnace_temperature, dtype: float, availability_stage: IN_PROCESS_ROLLING, data_class: MEDIATOR, recommendable: false}
+      - {name: observed_reheat_exit_temperature, dtype: float, availability_stage: IN_PROCESS_ROLLING, data_class: MEDIATOR, recommendable: false}
+      - {name: observed_roll_speed, dtype: float, availability_stage: IN_PROCESS_ROLLING, data_class: MEDIATOR, recommendable: false}
+      - {name: observed_rolling_load, dtype: float, availability_stage: IN_PROCESS_ROLLING, data_class: MEDIATOR, recommendable: false}
+      - {name: observed_lubrication_flow, dtype: float, availability_stage: IN_PROCESS_ROLLING, data_class: MEDIATOR, recommendable: false}
+      - {name: observed_mill_vibration, dtype: float, availability_stage: IN_PROCESS_ROLLING, data_class: MEDIATOR, recommendable: false}
+      - {name: mean_sensor_out_of_range_pct, dtype: float, availability_stage: IN_PROCESS_ROLLING, data_class: MEDIATOR, recommendable: false}
+      - {name: valid_sensor_window_rate, dtype: float, availability_stage: IN_PROCESS_ROLLING, data_class: MEDIATOR, recommendable: false}
+    targets: [actual_tph, approved_first_pass, is_rework, is_scrap, energy_per_good_tonne_kwh_t, outer_diameter_deviation_mm, wall_eccentricity_pct, ovality_pct]
+
+  - name: asset_window
+    entity_grain: asset_2h_operational_window
+    source_table: features.asset_window_snapshot
+    entity_id_column: window_id
+    snapshot_column: snapshot_ts
+    max_source_timestamp_column: feature_max_source_ts
+    ordered_by: window_id
+    features:
+      - {name: line_id, dtype: category, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: shift_id, dtype: category, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: asset_type, dtype: category, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: asset_criticality, dtype: category, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: window_hour, dtype: integer, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: month_number, dtype: integer, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: day_of_week, dtype: integer, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: is_weekend, dtype: boolean, availability_stage: PLAN, data_class: CONTEXT, recommendable: false}
+      - {name: prior_7d_downtime_events, dtype: integer, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+      - {name: prior_7d_downtime_minutes, dtype: float, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+      - {name: prior_30d_downtime_events, dtype: integer, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+      - {name: prior_30d_downtime_minutes, dtype: float, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+      - {name: prior_7d_maintenance_events, dtype: integer, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+      - {name: prior_7d_maintenance_minutes, dtype: float, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+      - {name: prior_mean_sensor_degradation, dtype: float, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+      - {name: prior_mean_tool_wear, dtype: float, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+      - {name: hours_since_last_maintenance, dtype: float, availability_stage: PRE_PROCESS, data_class: CONTEXT, recommendable: false}
+    targets: [next_window_downtime_occurred, next_window_downtime_duration_minutes]

@@ -106,6 +106,7 @@ def test_forbidden_packages_do_not_import_private_ground_truth() -> None:
         ROOT / "src" / "steelflow" / "features",
         ROOT / "src" / "steelflow" / "models",
         ROOT / "src" / "steelflow" / "optimization",
+        ROOT / "src" / "steelflow" / "reporting",
     )
     violations = []
     for package_root in forbidden_roots:

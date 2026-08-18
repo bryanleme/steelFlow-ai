@@ -187,7 +187,8 @@ def build_analytics_database(
     try:
         connection = duckdb.connect(str(staging_database_path))
         connection.execute("SET TimeZone='UTC'")
-        connection.execute("SET threads TO 2")
+        # Floating-point aggregates must remain byte-stable across equivalent builds.
+        connection.execute("SET threads TO 1")
         for schema_name in (
             "raw",
             "curated",

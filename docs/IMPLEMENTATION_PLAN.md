@@ -4,7 +4,7 @@
 
 Construir o SteelFlow AI como protótipo offline e reproduzível de apoio à decisão para uma fábrica fictícia de tubos OCTG sem costura. Todo dado será sintético; todos os limites, internos e simulados. O trabalho avança por checkpoints aprovados, sem iniciar a fase seguinte silenciosamente.
 
-**Status:** Fases 0–3 implementadas e validadas localmente em 2026-08-18; Fase 4 aguarda aprovação do Checkpoint 3.
+**Status:** Fases 0–4 implementadas e validadas localmente em 2026-08-18; Fase 5 aguarda aprovação do Checkpoint 4.
 
 ## Estado inicial auditado em 2026-08-18
 
@@ -65,6 +65,8 @@ Construir o SteelFlow AI como protótipo offline e reproduzível de apoio à dec
 3. Transformações temporais são ajustadas exclusivamente no fold de treino.
 4. Diagnósticos mostram desempenho bruto e ajustado por mix sem linguagem causal indevida.
 
+**Evidência executada:** o `dev` materializou 4.549 linhas em sete conjuntos diagnósticos e passou 8/8 checks. Os snapshots congelados contêm 500 ordens, 10.500 tubos e 5.400 janelas ativo × 2 h e passaram 27/27 checks de contrato, timestamps, separação `X`/índice/`y`, IDs, targets, proxies, hashes e isolamento causal. O DuckDB ampliado passou 46/46 checks nos dois perfis.
+
 ### Fase 5
 
 1. Divisão cronológica separa treino, tuning, calibração e teste final.
@@ -120,4 +122,4 @@ As dependências pesadas ficam em extras para que a fundação seja validável s
 
 ## Sequência imediata após aprovação
 
-Fase 4: produzir diagnóstico reproduzível de tendências, mix, Pareto, controle estatístico e interações; refinar snapshots por instante de decisão; executar a bateria contra vazamento e congelar o contrato de features. Treinamento, calibração e SHAP permanecem fora desta fase.
+Fase 5: definir janelas cronológicas distintas de treino, tuning, calibração e teste final; implementar baselines e modelos principais; avaliar incerteza, calibração, segmentos, estabilidade e latência; produzir SHAP, model cards e auditoria separada dos mecanismos sintéticos. O teste final permanecerá intocado durante ajustes.

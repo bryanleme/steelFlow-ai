@@ -10,7 +10,8 @@
 | DuckDB e camadas analíticas | SQL, banco recriável e marts | 3 | 43 checks por perfil, 15 contagens curated e reconciliações |
 | KPIs documentados | catálogo de 17 KPIs e marts por ordem/linha × turno | 3 | contrato completo e testes de fórmula/divisão por zero |
 | Esquema estrela Power BI | 5 dimensões, 8 fatos exportados, relações e DAX | 3 e 7 | 13 CSV/Parquet com contagem e checksum; `.pbix` não declarado |
-| Feature availability e anti-leakage | registro de disponibilidade e snapshots temporais | 4 | testes de timestamp, pós-processo, ID/target/proxy e fold |
+| Feature availability e anti-leakage | contrato v1.0.0 e três snapshots `X`/índice/`y` | 4 | 27 checks por perfil: timestamp, pós-processo, ID/target/proxy, hash e `fold_train_only` |
+| Diagnóstico e ajuste de mix | sete tabelas reproduzíveis de tendência, mix, SPC, Pareto e interações | 4 | 8 checks por perfil e relatório com linguagem não causal |
 | Baselines obrigatórios | pipeline de baseline versionado | 5 | relatório no mesmo teste temporal |
 | CatBoost, calibração e quantis | modelos, artefatos e avaliação | 5 | métricas, cobertura, calibração e segmentos |
 | SHAP e explicabilidade | explicações globais, por segmento e cenário | 5 | artefatos e smoke tests |

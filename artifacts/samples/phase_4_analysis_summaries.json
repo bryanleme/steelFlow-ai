@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "generated_at_date": "2026-08-18",
+  "prototype_scope": "offline synthetic data; no machine control",
+  "feature_contract": {
+    "version": "1.0.0",
+    "sha256": "4b44cb01d05ee1203a36b93337b0403c0d7b69920089c3b3ee5ae29cdff0eeb6",
+    "preprocessing_fit_scope": "fold_train_only"
+  },
+  "runs": {
+    "dev": {
+      "simulation_run_id": "sim-dev-v0.1.0-36068c9e490c",
+      "analytics_validation": {"status": "PASS", "checks": 46, "passed": 46, "failed": 0},
+      "diagnostics": {
+        "validation": {"status": "PASS", "checks": 8, "passed": 8, "failed": 0},
+        "tables": 7,
+        "rows": 4549,
+        "global_tbh": 19.173687,
+        "daily_tbh_linear_slope": -0.041452916,
+        "mean_mix_adjusted_tbh_gap": -0.289542,
+        "maximum_absolute_mix_adjusted_tbh_gap": 3.357837,
+        "top_loss_type": "UNPLANNED_DOWNTIME",
+        "top_loss_tonnes_equivalent": 6345.92627,
+        "tbh_control_signals": 3,
+        "quality_control_signals": 24,
+        "largest_interaction_tbh_spread": 8.07823,
+        "interpretation": "retrospective synthetic associations; not demonstrated industrial causality"
+      },
+      "features": {
+        "validation": {"status": "PASS", "checks": 27, "passed": 27, "failed": 0},
+        "snapshots": {
+          "pre_order": {"rows": 500, "features": 12, "targets": 5},
+          "in_process_rolling": {"rows": 10500, "features": 30, "targets": 8},
+          "asset_window": {
+            "rows": 5400,
+            "features": 17,
+            "targets": 2,
+            "next_window_downtime_rate": 0.136481
+          }
+        }
+      }
+    },
+    "test": {
+      "simulation_run_id": "sim-test-v0.1.0-dab663420791",
+      "analytics_validation": {"status": "PASS", "checks": 46, "passed": 46, "failed": 0},
+      "diagnostics": {
+        "validation": {"status": "PASS", "checks": 8, "passed": 8, "failed": 0},
+        "tables": 7,
+        "rows": 375
+      },
+      "features": {
+        "validation": {"status": "PASS", "checks": 27, "passed": 27, "failed": 0},
+        "snapshots": {
+          "pre_order": {"rows": 24, "features": 12, "targets": 5},
+          "in_process_rolling": {"rows": 480, "features": 30, "targets": 8},
+          "asset_window": {
+            "rows": 360,
+            "features": 17,
+            "targets": 2,
+            "next_window_downtime_rate": 0.097222
+          }
+        }
+      }
+    }
+  }
+}

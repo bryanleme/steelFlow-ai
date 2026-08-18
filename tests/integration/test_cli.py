@@ -44,6 +44,8 @@ def test_help_smoke() -> None:
 
     assert result.returncode == 0, result.stderr
     assert "offline synthetic decision-support prototype" in result.stdout
+    assert "diagnose" in result.stdout
+    assert "build-features" in result.stdout
 
 
 def test_all_configs_validate_from_cli() -> None:
