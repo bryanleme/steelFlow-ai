@@ -2,31 +2,45 @@
 
 Arquivo final para envio: `SteelFlow_AI_LinkedIn_Carousel.pptx`.
 
-Formato: 1080 × 1350 px, três slides e uma mensagem principal por tela.
+Formato: 1080 × 1350 px, cinco slides e uma mensagem principal por tela.
 
-## Slide 1 — O problema que eu vi
+## Slide 1 — O problema e a proposta
 
-**Havia dados. Faltava testar hipóteses.**
+**Dados para comparar decisões.**
 
-Quando os defeitos apareciam, os parâmetros eram ajustados na tentativa e erro.
+Quando um defeito aparece, a plataforma ajuda a trocar tentativa e erro por hipóteses comparáveis.
 
 Rodapé: protótipo offline · dados **100% sintéticos**.
 
-## Slide 2 — A proposta
+## Slide 2 — A plataforma
 
-**Testar hipóteses antes de ajustar.**
+**Cinco páginas. Uma jornada de decisão.**
 
-O SteelFlow AI combina parâmetros, estima probabilidades e faixas P10/P50/P90, compara alternativas e recusa cenários sem suporte histórico.
+O fluxo reúne visão geral, influências, previsão e risco, teste de cenários e confiabilidade do modelo. O aplicativo possui **5 páginas** <!-- [claim:STREAMLIT_PAGES] --> e uma exploração complementar no Power BI, com **13 tabelas** <!-- [claim:POWERBI_TABLES] --> verificadas.
+
+## Slide 3 — Previsão e risco
+
+**A previsão mostra valor, risco e faixa.**
+
+O SteelFlow AI mostra probabilidades e faixas P10/P50/P90 para colocar produtividade, energia, qualidade e parada em contexto.
+
+Nos seis alvos contínuos, a cobertura P10–P90 observada ficou entre **77,39%** <!-- [claim:INTERVAL_COVERAGE_MIN] --> e **82,13%** <!-- [claim:INTERVAL_COVERAGE_MAX] -->.
+
+## Slide 4 — Teste de cenários
+
+**Mude parâmetros. Compare cenários.**
+
+A plataforma recalcula resultados, compara alternativas e bloqueia hipóteses fora do histórico.
 
 - **12 cenários** <!-- [claim:PUBLISHED_SCENARIOS] --> publicados;
 - **9 restrições** <!-- [claim:HARD_CONSTRAINTS] --> obrigatórias;
 - **3 sondas OOD** <!-- [claim:OOD_PROBES] --> recusadas.
 
-## Slide 3 — A mudança
+## Slide 5 — Convite
 
-**Da tentativa e erro ao teste de hipóteses.**
+**Explore a plataforma.**
 
-O sistema não substitui o especialista. Ele organiza evidências para que a decisão humana compare cenários antes de agir.
+Veja as telas, teste o fluxo e questione os limites. O sistema organiza evidências para a decisão humana; não substitui o especialista.
 
 github.com/bryanleme/steelFlow-ai
 
@@ -39,12 +53,5 @@ Rodapé: protótipo educacional · **sem controle de máquina** · **não demons
 - a meta de melhoria do TBH foi **5%**
   <!-- [claim:TBH_ENGINEERING_TARGET] --> e o resultado, **0,98%**
   <!-- [claim:TBH_RELATIVE_IMPROVEMENT] -->;
-- a cobertura P10–P90 observada ficou entre **77,39%**
-  <!-- [claim:INTERVAL_COVERAGE_MIN] --> e **82,13%**
-  <!-- [claim:INTERVAL_COVERAGE_MAX] --> nos seis alvos contínuos;
 - o otimizador executou **20.160** avaliações
   <!-- [claim:NSGA_EVALUATIONS] -->;
-- o pacote Power BI contém **13 tabelas**
-  <!-- [claim:POWERBI_TABLES] --> verificadas;
-- o aplicativo possui **5 páginas**
-  <!-- [claim:STREAMLIT_PAGES] -->.
