@@ -1,0 +1,14 @@
+schema_version: "1.0"
+truth_version: "0.1.0"
+access_policy:
+  allowed_packages: [steelflow.generation, steelflow.validation.ground_truth_audit]
+  forbidden_packages: [steelflow.features, steelflow.models, steelflow.optimization]
+mechanisms:
+  - {id: product_mix_complexity, enabled: true}
+  - {id: thermal_uniformity_x_mandrel_wear, enabled: true}
+  - {id: speed_x_thermal_window, enabled: true}
+  - {id: heat_treatment_grade_x_thickness, enabled: true}
+  - {id: accumulated_hours_x_sensor_degradation, enabled: true}
+  - {id: temporal_process_drift, enabled: true}
+  - {id: sensor_missingness_mcar_mar_block, enabled: true}
+  - {id: learnable_rare_events, enabled: true}

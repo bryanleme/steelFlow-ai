@@ -1,0 +1,159 @@
+"""Command-line entry point for reproducible SteelFlow AI workflows."""
+
+from __future__ import annotations
+
+import argparse
+import importlib.util
+import json
+import logging
+import platform
+import sys
+from collections.abc import Sequence
+from pathlib import Path
+
+from steelflow import __version__
+from steelflow.config import (
+    ConfigError,
+    available_profiles,
+    load_config_bundle,
+    resolve_project_root,
+)
+from steelflow.observability import configure_logging
+
+LOGGER = logging.getLogger("steelflow.cli")
+
+_FUTURE_COMMAND_PHASES = {
+    "generate": 2,
+    "validate-data": 2,
+    "build-db": 3,
+    "train": 5,
+    "evaluate": 5,
+    "optimize-demo": 6,
+    "app": 7,
+}
+
+
+def _add_profile_argument(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--profile", choices=available_profiles(), default="dev")
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="steelflow",
+        description="SteelFlow AI — offline synthetic decision-support prototype.",
+    )
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
+    parser.add_argument(
+        "--project-root",
+        type=Path,
+        help="Project root override; defaults to the installed source tree.",
+    )
+    parser.add_argument("--log-level", default=None)
+    parser.add_argument("--json-logs", action="store_true")
+
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    validate_parser = subparsers.add_parser(
+        "validate-config", help="Validate one profile or the complete configuration set."
+    )
+    validate_parser.add_argument("--all", action="store_true", dest="all_profiles")
+    _add_profile_argument(validate_parser)
+
+    hash_parser = subparsers.add_parser(
+        "config-hash", help="Print the stable SHA-256 hash of a validated configuration bundle."
+    )
+    _add_profile_argument(hash_parser)
+
+    doctor_parser = subparsers.add_parser(
+        "doctor", help="Check the runtime, repository structure and configuration contracts."
+    )
+    doctor_parser.add_argument("--json", action="store_true", dest="json_output")
+
+    for command, phase in _FUTURE_COMMAND_PHASES.items():
+        future_parser = subparsers.add_parser(
+            command,
+            help=f"Reserved product command; implementation is planned for Phase {phase}.",
+        )
+        _add_profile_argument(future_parser)
+
+    return parser
+
+
+def _validate_profiles(profiles: Sequence[str], project_root: Path | None) -> int:
+    for profile in profiles:
+        bundle = load_config_bundle(profile, project_root)
+        print(
+            f"OK profile={profile} days={bundle.simulation.period.duration_days} "
+            f"bundle_sha256={bundle.stable_hash()}"
+        )
+    return 0
+
+
+def _doctor(project_root: Path | None, *, json_output: bool) -> int:
+    root = resolve_project_root(project_root)
+    python_supported = (3, 11) <= sys.version_info[:2] < (3, 15)
+    profile_results: dict[str, str] = {}
+    for profile in available_profiles():
+        bundle = load_config_bundle(profile, root)
+        profile_results[profile] = bundle.stable_hash()
+
+    packages = {
+        package: importlib.util.find_spec(package) is not None
+        for package in ("pydantic", "yaml", "pytest", "duckdb", "catboost", "streamlit")
+    }
+    result = {
+        "status": "ok" if python_supported else "error",
+        "project_root": str(root),
+        "platform": platform.platform(),
+        "python": platform.python_version(),
+        "python_supported": python_supported,
+        "profiles": profile_results,
+        "packages": packages,
+        "prototype_scope": "offline synthetic data; no machine control",
+    }
+    if json_output:
+        print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+    else:
+        print(f"status: {result['status']}")
+        print(f"python: {result['python']} (supported={str(python_supported).lower()})")
+        print(f"profiles: {', '.join(profile_results)}")
+        print("scope: offline synthetic data; no machine control")
+        missing_optional = [
+            package for package in ("duckdb", "catboost", "streamlit") if not packages[package]
+        ]
+        if missing_optional:
+            print(f"optional packages pending later phases: {', '.join(missing_optional)}")
+    return 0 if python_supported else 1
+
+
+def run(argv: Sequence[str] | None = None) -> int:
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    try:
+        configure_logging(args.log_level, json_output=args.json_logs)
+        if args.command == "validate-config":
+            profiles = available_profiles() if args.all_profiles else (args.profile,)
+            return _validate_profiles(profiles, args.project_root)
+        if args.command == "config-hash":
+            print(load_config_bundle(args.profile, args.project_root).stable_hash())
+            return 0
+        if args.command == "doctor":
+            return _doctor(args.project_root, json_output=args.json_output)
+        if args.command in _FUTURE_COMMAND_PHASES:
+            phase = _FUTURE_COMMAND_PHASES[args.command]
+            print(
+                f"ERROR: command {args.command!r} is reserved for Phase {phase} and is not "
+                "implemented in the Phase 1 foundation.",
+                file=sys.stderr,
+            )
+            return 2
+    except (ConfigError, ValueError) as exc:
+        LOGGER.error("command_failed", extra={"command": args.command, "reason": str(exc)})
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
+    parser.error(f"unsupported command: {args.command}")
+    return 2
+
+
+def main() -> None:
+    raise SystemExit(run())

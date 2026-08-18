@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Local configuration and secrets
+.env
+*.local.yaml
+
+# Generated data, databases, models and caches
+data/raw/
+data/curated/
+data/analytics/
+data/features/
+data/model_outputs/
+data/ground_truth/
+*.duckdb
+*.duckdb.wal
+artifacts/*
+!artifacts/.gitkeep
+powerbi/exports/*
+!powerbi/exports/.gitkeep
+
+# Streamlit and notebooks
+.streamlit/secrets.toml
+.ipynb_checkpoints/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

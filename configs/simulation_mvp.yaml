@@ -1,0 +1,36 @@
+schema_version: "1.0"
+profile: mvp
+generator_version: "0.1.0"
+random_seed: 20260818
+period:
+  start_date: 2024-01-01
+  end_date: 2025-12-31
+plant:
+  lines: [LINE_01, LINE_02, LINE_03]
+  shifts: [SHIFT_A, SHIFT_B, SHIFT_C]
+  grade_families: [J55, N80, L80, P110]
+  product_codes:
+    - OCTG_01
+    - OCTG_02
+    - OCTG_03
+    - OCTG_04
+    - OCTG_05
+    - OCTG_06
+    - OCTG_07
+    - OCTG_08
+    - OCTG_09
+    - OCTG_10
+    - OCTG_11
+    - OCTG_12
+volume_targets:
+  orders: 12000
+  tubes: 250000
+  stage_events: 1800000
+  sensor_windows: 8000000
+  quality_results: 1500000
+  downtime_events: 20000
+output:
+  base_path: data/raw
+  partition_frequency: month
+  batch_size: 100000
+  overwrite: false

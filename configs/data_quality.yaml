@@ -1,0 +1,12 @@
+schema_version: "1.0"
+fail_fast: true
+checks:
+  - {id: primary_key_uniqueness, severity: error, enabled: true}
+  - {id: foreign_key_integrity, severity: error, enabled: true}
+  - {id: domain_validity, severity: error, enabled: true}
+  - {id: unit_consistency, severity: error, enabled: true}
+  - {id: temporal_ordering, severity: error, enabled: true}
+  - {id: expected_completeness, severity: error, enabled: true}
+  - {id: plausible_ranges, severity: error, enabled: true}
+  - {id: deterministic_ids, severity: error, enabled: true}
+  - {id: stable_content_hashes, severity: warning, enabled: true}

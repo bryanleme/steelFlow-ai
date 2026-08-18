@@ -1,0 +1,14 @@
+schema_version: "1.0"
+disclaimer: "Internal simulated limits for an offline educational prototype; not an API 5CT specification."
+units:
+  temperature: degC
+  speed: rpm
+  flow: L_min
+  pressure: bar
+process_envelopes:
+  reheat_zone_temperature_deg_c: {min: 850.0, max: 1320.0}
+  soak_time_min: {min: 20.0, max: 180.0}
+  roll_speed_rpm: {min: 40.0, max: 240.0}
+  lubrication_flow_l_min: {min: 5.0, max: 80.0}
+  austenitizing_temperature_deg_c: {min: 780.0, max: 980.0}
+  tempering_temperature_deg_c: {min: 450.0, max: 760.0}
