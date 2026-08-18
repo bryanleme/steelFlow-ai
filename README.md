@@ -147,6 +147,7 @@ Documentação principal:
 - [Relatório de otimização](docs/OPTIMIZATION_REPORT.md)
 - [Model card](docs/MODEL_CARD.md)
 - [Relatório do produto](docs/PRODUCT_REPORT.md)
+- [Publicação para LinkedIn em Word](docs/SteelFlow_AI_Publicacao_LinkedIn.docx)
 - [Revisão de segurança](docs/SECURITY_REVIEW.md)
 
 ## Segurança e licença

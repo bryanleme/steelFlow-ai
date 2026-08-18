@@ -25,15 +25,19 @@ A base possui **12.594.517** registros públicos sintéticos <!-- [claim:MVP_PUB
 
 E nem todo resultado foi positivo: a meta de melhoria do modelo de TBH era **5%** <!-- [claim:TBH_ENGINEERING_TARGET] -->, mas o resultado foi **0,98%** <!-- [claim:TBH_RELATIVE_IMPROVEMENT] -->. Mantive isso visível porque transparência também faz parte de um sistema de decisão.
 
-O objetivo não é substituir o conhecimento de processo.
+Uma parte importante dessa experiência foi a forma de construção: o programa foi desenvolvido com **vibe coding**.
 
-É trocar o “vamos tentar e ver o que acontece” por hipóteses comparáveis, incerteza explícita e revisão humana.
+Usei IA como parceira para transformar perguntas em protótipos, acelerar código, documentação e testes. Mas velocidade não substituiu critério: métricas, limites e decisões continuaram sendo revisados, testados e auditados.
+
+O objetivo não é substituir o conhecimento de processo — nem o trabalho analítico.
+
+É reduzir o tempo entre uma pergunta, uma hipótese e uma análise que possa ser discutida com evidências.
 
 Escopo importante: o protótipo é offline e **100% sintético**, está **sem controle de máquina** e **não demonstra causalidade industrial**. As saídas são estimativas de modelos, não receitas operacionais.
 
-Na sua experiência, quantos ajustes de processo ainda são feitos na tentativa e erro porque os dados não foram transformados em um ambiente de teste?
+Se a IA já consegue encurtar o caminho entre uma hipótese e sua análise, **como podemos usá-la para acelerar os processos analíticos sem perder rastreabilidade, senso crítico e responsabilidade?**
 
 Projeto, código e evidências:
 https://github.com/bryanleme/steelFlow-ai
 
-#DataEngineering #MachineLearning #Manufacturing #IndustrialAI #DataScience
+#DataEngineering #MachineLearning #Manufacturing #IndustrialAI #VibeCoding #DataScience
