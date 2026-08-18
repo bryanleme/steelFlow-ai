@@ -51,6 +51,8 @@ def test_complete_bundle_has_deterministic_hash() -> None:
     assert first.stable_hash() == second.stable_hash()
     assert len(first.stable_hash()) == 64
     assert first.stable_hash() != load_config_bundle("test", ROOT).stable_hash()
+    assert len(first.feature_availability.features) >= 30
+    assert sum(feature.recommendable for feature in first.feature_availability.features) >= 10
 
 
 def test_available_profiles_follow_declared_order() -> None:

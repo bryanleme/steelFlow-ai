@@ -8,7 +8,7 @@ SteelFlow AI é um *decision-support digital twin* simplificado para uma fábric
 
 ## Estado atual
 
-As Fases 0 e 1 estabelecem a fundação executável:
+As Fases 0, 1 e 2 estabelecem a fundação e o gerador auditável:
 
 - configuração YAML tipada e estrita para os perfis `test`, `dev` e `mvp`;
 - CLI instalável com diagnóstico, validação e hash estável das configurações;
@@ -16,8 +16,12 @@ As Fases 0 e 1 estabelecem a fundação executável:
 - estrutura modular para geração, validação, curadoria, features, modelos e otimização;
 - testes unitários e de integração da fundação;
 - plano rastreável, decisões e riscos documentados.
+- geração incremental de dimensões, ordens, tarugos, tubos, etapas, parâmetros, sensores resumidos, qualidade, energia, paradas e manutenção;
+- IDs, seeds, manifests e hashes lógicos/físicos determinísticos;
+- verdade causal por tubo armazenada fora da camada `raw` e proibida para features/modelos;
+- contratos automáticos de PK/FK, temporalidade, domínios, ranges, completude e linhagem.
 
-O gerador completo começa apenas na Fase 2. Os comandos futuros já são reservados na CLI, mas falham explicitamente até sua fase de implementação.
+Os perfis `test` e `dev` já foram gerados e validados. Curadoria analítica e DuckDB persistente começam apenas na Fase 3.
 
 ## Instalação
 
@@ -28,7 +32,7 @@ Python compatível: `>=3.11,<3.15`. A fundação foi verificada no ambiente loca
 ```powershell
 python -m venv .venv
 .venv\Scripts\python -m pip install --upgrade pip
-.venv\Scripts\python -m pip install -e ".[dev]"
+.venv\Scripts\python -m pip install -e ".[data,dev]"
 .venv\Scripts\python -m steelflow doctor
 .venv\Scripts\python -m pytest
 ```
@@ -38,7 +42,7 @@ python -m venv .venv
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install --upgrade pip
-.venv/bin/python -m pip install -e ".[dev]"
+.venv/bin/python -m pip install -e ".[data,dev]"
 .venv/bin/python -m steelflow doctor
 .venv/bin/python -m pytest
 ```
@@ -47,18 +51,22 @@ Se `uv` estiver disponível, o bootstrap equivalente é:
 
 ```bash
 uv venv
-uv pip install -e ".[dev]"
+uv pip install -e ".[data,dev]"
 uv run steelflow doctor
 uv run pytest
 ```
 
-## Comandos da fundação
+## Comandos disponíveis
 
 ```bash
 python -m steelflow --help
 python -m steelflow validate-config --all
 python -m steelflow config-hash --profile dev
 python -m steelflow doctor --json
+python -m steelflow generate --profile test
+python -m steelflow validate-data --profile test
+python -m steelflow generate --profile dev
+python -m steelflow validate-data --profile dev
 python -m pytest
 python -m ruff check .
 ```
@@ -69,8 +77,8 @@ Quando `make` estiver instalado, `make setup`, `make validate-config`, `make doc
 
 | Atalho | Comando Python equivalente | Fase de implementação |
 |---|---|---:|
-| `make generate-dev` | `python -m steelflow generate --profile dev` | 2 |
-| `make validate-data` | `python -m steelflow validate-data --profile dev` | 2 |
+| `make generate-dev` | `python -m steelflow generate --profile dev` | Implementado |
+| `make validate-data` | `python -m steelflow validate-data --profile dev` | Implementado |
 | `make build-db` | `python -m steelflow build-db --profile dev` | 3 |
 | `make train` | `python -m steelflow train --profile dev` | 5 |
 | `make evaluate` | `python -m steelflow evaluate --profile dev` | 5 |
@@ -87,7 +95,18 @@ Antes da fase correspondente, cada comando retorna código diferente de zero e i
 | `dev` | 30 dias | desenvolvimento e validação local | 500 ordens / 10.500 tubos |
 | `mvp` | 24 meses | demonstração em escala de portfólio | 12.000 ordens / 250.000 tubos |
 
-Os números acima são volumes solicitados em configuração, não resultados já gerados. Nenhuma base sintética foi produzida na Fase 1.
+Os volumes configurados de `test` e `dev` foram materializados. O perfil `mvp` continua sendo apenas uma configuração até a validação de capacidade e autorização específica de execução.
+
+## Evidência da Fase 2
+
+| Perfil | Linhas públicas | Tempo de geração | Disco raw | Validação | Hash lógico |
+|---|---:|---:|---:|---:|---|
+| `test` | 24.263 | 2,55 s | 1,56 MB | 83/83 | `1a3cfadac7af…` |
+| `dev` | 529.014 | 19,05 s | 30,35 MB | 83/83 | `ee400a163caf…` |
+
+Medições locais em Python 3.14.6, não benchmarks universais. Os dados são inteiramente sintéticos e os resultados não representam desempenho de uma fábrica real.
+
+Os arquivos são gravados em `data/raw/<profile>/<simulation_run_id>/`; a verdade causal fica separada em `data/ground_truth/`. Ambos são recriáveis e ignorados pelo Git. `--force` substitui somente o diretório determinístico da configuração selecionada.
 
 ## Arquitetura planejada
 

@@ -64,6 +64,9 @@ def test_doctor_returns_machine_readable_report() -> None:
     assert report["status"] == "ok"
     assert report["python_supported"] is True
     assert set(report["profiles"]) == {"test", "dev", "mvp"}
+    assert report["packages"]["numpy"] is True
+    assert report["packages"]["pyarrow"] is True
+    assert report["packages"]["duckdb"] is True
     assert report["prototype_scope"] == "offline synthetic data; no machine control"
 
 
@@ -79,8 +82,6 @@ def test_config_hash_is_a_sha256_digest() -> None:
 @pytest.mark.parametrize(
     ("command", "phase"),
     [
-        ("generate", 2),
-        ("validate-data", 2),
         ("build-db", 3),
         ("train", 5),
         ("evaluate", 5),

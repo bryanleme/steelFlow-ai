@@ -24,6 +24,9 @@ data/ground_truth/
 *.duckdb.wal
 artifacts/*
 !artifacts/.gitkeep
+!artifacts/samples/
+!artifacts/samples/*.json
+!artifacts/samples/README.md
 powerbi/exports/*
 !powerbi/exports/.gitkeep
 

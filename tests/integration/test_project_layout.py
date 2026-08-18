@@ -18,12 +18,19 @@ def test_foundation_files_are_present() -> None:
         "configs/internal_specs.yaml",
         "configs/causal_rules.yaml",
         "configs/data_quality.yaml",
+        "configs/feature_availability.yaml",
         "docs/IMPLEMENTATION_PLAN.md",
         "docs/DECISION_LOG.md",
         "docs/REQUIREMENTS_TRACEABILITY.md",
         "docs/RISK_REGISTER.md",
+        "docs/DATA_CARD.md",
+        "docs/03_DATA_DICTIONARY_V0.md",
+        "docs/GENERATOR_DESIGN.md",
+        "artifacts/samples/phase_2_run_summaries.json",
         "src/steelflow/config.py",
         "src/steelflow/cli.py",
+        "src/steelflow/generation/generator.py",
+        "src/steelflow/validation/raw_data.py",
     }
 
     missing = sorted(path for path in required if not (ROOT / path).is_file())

@@ -18,13 +18,13 @@ from steelflow.config import (
     load_config_bundle,
     resolve_project_root,
 )
+from steelflow.generation.generator import GenerationError, generate_dataset
 from steelflow.observability import configure_logging
+from steelflow.validation.raw_data import validate_raw_dataset
 
 LOGGER = logging.getLogger("steelflow.cli")
 
 _FUTURE_COMMAND_PHASES = {
-    "generate": 2,
-    "validate-data": 2,
     "build-db": 3,
     "train": 5,
     "evaluate": 5,
@@ -69,6 +69,21 @@ def build_parser() -> argparse.ArgumentParser:
     )
     doctor_parser.add_argument("--json", action="store_true", dest="json_output")
 
+    generate_parser = subparsers.add_parser(
+        "generate", help="Generate one deterministic partitioned synthetic-data profile."
+    )
+    _add_profile_argument(generate_parser)
+    generate_parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Replace only the deterministic run directory for this exact profile/configuration.",
+    )
+
+    validate_data_parser = subparsers.add_parser(
+        "validate-data", help="Validate the deterministic raw run for one profile."
+    )
+    _add_profile_argument(validate_data_parser)
+
     for command, phase in _FUTURE_COMMAND_PHASES.items():
         future_parser = subparsers.add_parser(
             command,
@@ -99,7 +114,16 @@ def _doctor(project_root: Path | None, *, json_output: bool) -> int:
 
     packages = {
         package: importlib.util.find_spec(package) is not None
-        for package in ("pydantic", "yaml", "pytest", "duckdb", "catboost", "streamlit")
+        for package in (
+            "pydantic",
+            "yaml",
+            "pytest",
+            "numpy",
+            "pyarrow",
+            "duckdb",
+            "catboost",
+            "streamlit",
+        )
     }
     result = {
         "status": "ok" if python_supported else "error",
@@ -126,6 +150,33 @@ def _doctor(project_root: Path | None, *, json_output: bool) -> int:
     return 0 if python_supported else 1
 
 
+def _generate(profile: str, project_root: Path | None, *, force: bool) -> int:
+    root = resolve_project_root(project_root)
+    bundle = load_config_bundle(profile, root)
+    result = generate_dataset(bundle, project_root=root, overwrite=force)
+    print(
+        f"OK run_id={result.simulation_run_id} profile={profile} "
+        f"tables={len(result.table_counts)} rows={sum(result.table_counts.values())} "
+        f"logical_sha256={result.dataset_logical_sha256} "
+        f"elapsed_seconds={result.elapsed_seconds:.3f}"
+    )
+    print(f"raw_path={result.raw_path.relative_to(root)}")
+    print(f"ground_truth_path={result.ground_truth_path.relative_to(root)} access=isolated")
+    return 0
+
+
+def _validate_data(profile: str, project_root: Path | None) -> int:
+    root = resolve_project_root(project_root)
+    bundle = load_config_bundle(profile, root)
+    report = validate_raw_dataset(bundle, project_root=root)
+    summary = report.to_dict()["summary"]
+    print(
+        f"{report.to_dict()['status']} run_id={report.simulation_run_id} "
+        f"checks={summary['checks']} passed={summary['passed']} failed={summary['failed']}"
+    )
+    return 0 if report.passed else 1
+
+
 def run(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -139,15 +190,19 @@ def run(argv: Sequence[str] | None = None) -> int:
             return 0
         if args.command == "doctor":
             return _doctor(args.project_root, json_output=args.json_output)
+        if args.command == "generate":
+            return _generate(args.profile, args.project_root, force=args.force)
+        if args.command == "validate-data":
+            return _validate_data(args.profile, args.project_root)
         if args.command in _FUTURE_COMMAND_PHASES:
             phase = _FUTURE_COMMAND_PHASES[args.command]
             print(
                 f"ERROR: command {args.command!r} is reserved for Phase {phase} and is not "
-                "implemented in the Phase 1 foundation.",
+                "implemented in the current project phase.",
                 file=sys.stderr,
             )
             return 2
-    except (ConfigError, ValueError) as exc:
+    except (ConfigError, GenerationError, ValueError) as exc:
         LOGGER.error("command_failed", extra={"command": args.command, "reason": str(exc)})
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1

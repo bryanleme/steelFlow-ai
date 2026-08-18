@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "generated_at_date": "2026-08-18",
+  "prototype_scope": "offline synthetic data; no machine control",
+  "runs": {
+    "dev": {
+      "configuration_sha256": "8352d46f24e5520b775867fd9a7111a1af885c491db15beaaac3d86cce16a0a5",
+      "dataset_logical_sha256": "ee400a163caf9248cff647a420b07cdebc5ebdcbe212afd613c4147b3e21cbb1",
+      "elapsed_seconds": 19.047212,
+      "first_pass_yield": 0.860762,
+      "ground_truth_megabytes": 0.94,
+      "mean_downtime_minutes": 23.318441,
+      "public_rows": 529014,
+      "raw_megabytes": 30.345,
+      "rework_rate": 0.131048,
+      "scrap_rate": 0.00819,
+      "simulation_run_id": "sim-dev-v0.1.0-36068c9e490c",
+      "validation": {
+        "checks": 83,
+        "failed": 0,
+        "passed": 83,
+        "status": "PASS"
+      }
+    },
+    "test": {
+      "configuration_sha256": "1585d01cfd01531a07826497d77ced7ad9b3f44047ec070d990df52cea5de1d8",
+      "dataset_logical_sha256": "1a3cfadac7afd5d095067a94d98cee462b1895ef4d736b9986a4b60d8fa2cbe2",
+      "elapsed_seconds": 2.552937,
+      "first_pass_yield": 0.845833,
+      "public_rows": 24263,
+      "rework_rate": 0.145833,
+      "scrap_rate": 0.008333,
+      "simulation_run_id": "sim-test-v0.1.0-dab663420791",
+      "validation": {
+        "checks": 83,
+        "failed": 0,
+        "passed": 83,
+        "status": "PASS"
+      }
+    }
+  },
+  "runtime": {
+    "PyYAML": "6.0.3",
+    "numpy": "2.5.2",
+    "pyarrow": "23.0.1",
+    "pydantic": "2.13.4",
+    "python": "3.14.6",
+    "steelflow-ai": "0.1.0"
+  }
+}

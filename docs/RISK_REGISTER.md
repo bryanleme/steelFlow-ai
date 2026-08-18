@@ -3,10 +3,10 @@
 | ID | Risco | Prob. | Impacto | Mitigação / gatilho | Estado |
 |---|---|---:|---:|---|---|
 | R-001 | Rodas de CatBoost/SHAP/pymoo não compatíveis com Python 3.14 no ambiente local. | Média | Alto | Manter suporte-fonte `>=3.11`; testar extra por pacote antes da Fase 5; usar Python 3.12/3.13 em venv se houver incompatibilidade comprovada. | Aberto |
-| R-002 | Escala `mvp` exceder memória ou disco local. | Média | Alto | Escrita incremental, partição mensal, medição no `dev`, estimativa por tabela e verificação de espaço antes do `mvp`. | Aberto |
-| R-003 | Verdade causal vazar para features/modelos. | Média | Crítico | Pacote e armazenamento isolados, lista de acesso, teste de imports e auditoria executada em processo separado. | Aberto |
+| R-002 | Escala `mvp` exceder memória ou disco local. | Média | Alto | Escrita incremental, partição mensal, medição no `dev`, estimativa por tabela e verificação de espaço antes do `mvp`. `dev` ocupou 30,35 MB raw em 19,05 s. | Mitigado; verificar antes do `mvp` |
+| R-003 | Verdade causal vazar para features/modelos. | Média | Crítico | Pacote privado, armazenamento isolado, lista de acesso, teste de imports e auditoria executada em processo separado. | Mitigado; revalidar nas Fases 4–5 |
 | R-004 | Performance aparente vir de mix ou vazamento temporal. | Média | Crítico | Baseline condicionado, split temporal em quatro janelas, backtesting e testes point-in-time. | Aberto |
-| R-005 | Evento raro insuficiente para calibração/segmentos. | Média | Alto | Dimensionar taxas plausíveis no `test`/`dev`, medir suporte e reportar intervalos; não equilibrar artificialmente a população. | Aberto |
+| R-005 | Evento raro insuficiente para calibração/segmentos. | Média | Alto | Dimensionar taxas plausíveis no `test`/`dev`, medir suporte e reportar intervalos; não equilibrar artificialmente a população. `dev` produziu 0,819% de refugo e 820 paradas. | Aberto para modelagem |
 | R-006 | Cenários OOD receberem recomendação indevida. | Baixa | Crítico | Guard de envelope condicional, distância histórica, restrições duras e recusa explícita. | Aberto |
 | R-007 | Power BI Desktop indisponível impedir `.pbix` validado. | Alta | Médio | Entregar esquema estrela, exports, relações, Power Query, tema, wireframe e DAX; declarar limitação sem alegar `.pbix`. | Aberto |
 | R-008 | Ausência de Git reduzir rastreabilidade de mudanças. | Alta | Médio | Manter versões nos arquivos/configurações e manifests; solicitar inicialização somente se o usuário autorizar. | Aberto |

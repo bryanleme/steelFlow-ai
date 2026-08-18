@@ -30,6 +30,25 @@ class SimulationProfile(StrEnum):
     MVP = "mvp"
 
 
+class AvailabilityStage(StrEnum):
+    PLAN = "PLAN"
+    PRE_PROCESS = "PRE_PROCESS"
+    IN_PROCESS_REHEAT = "IN_PROCESS_REHEAT"
+    IN_PROCESS_ROLLING = "IN_PROCESS_ROLLING"
+    IN_PROCESS_HT = "IN_PROCESS_HT"
+    POST_PROCESS = "POST_PROCESS"
+    DERIVED_POST = "DERIVED_POST"
+    METADATA = "METADATA"
+
+
+class FeatureClass(StrEnum):
+    CONTEXT = "CONTEXT"
+    CONTROLLABLE = "CONTROLLABLE"
+    MEDIATOR = "MEDIATOR"
+    RESULT = "RESULT"
+    METADATA = "METADATA"
+
+
 class SimulationPeriod(StrictModel):
     start_date: date
     end_date: date
@@ -250,11 +269,49 @@ class DataQualityConfig(StrictModel):
         return value
 
 
+class FeatureDefinition(StrictModel):
+    feature_name: str = Field(min_length=2)
+    source_table: str = Field(min_length=2)
+    availability_stage: AvailabilityStage
+    data_class: FeatureClass
+    recommendable: bool
+    unit: str
+    description: str = Field(min_length=8)
+
+    @model_validator(mode="after")
+    def validate_recommendability(self) -> FeatureDefinition:
+        if self.recommendable and self.data_class is not FeatureClass.CONTROLLABLE:
+            raise ValueError("only CONTROLLABLE features may be recommendable")
+        if self.recommendable and self.availability_stage in {
+            AvailabilityStage.POST_PROCESS,
+            AvailabilityStage.DERIVED_POST,
+            AvailabilityStage.METADATA,
+        }:
+            raise ValueError("post-process and metadata features cannot be recommendable")
+        return self
+
+
+class FeatureAvailabilityConfig(StrictModel):
+    schema_version: Literal["1.0"]
+    features: tuple[FeatureDefinition, ...]
+
+    @field_validator("features")
+    @classmethod
+    def validate_features(
+        cls, value: tuple[FeatureDefinition, ...]
+    ) -> tuple[FeatureDefinition, ...]:
+        names = [feature.feature_name for feature in value]
+        if len(names) < 30 or len(set(names)) != len(names):
+            raise ValueError("at least thirty unique feature definitions are required")
+        return value
+
+
 class ProjectConfigBundle(StrictModel):
     simulation: SimulationConfig
     internal_specs: InternalSpecsConfig
     causal_rules: CausalRulesConfig
     data_quality: DataQualityConfig
+    feature_availability: FeatureAvailabilityConfig
 
     def stable_hash(self) -> str:
         payload = json.dumps(
@@ -339,6 +396,11 @@ def load_config_bundle(
         ("internal_specs", InternalSpecsConfig, root / "configs" / "internal_specs.yaml"),
         ("causal_rules", CausalRulesConfig, root / "configs" / "causal_rules.yaml"),
         ("data_quality", DataQualityConfig, root / "configs" / "data_quality.yaml"),
+        (
+            "feature_availability",
+            FeatureAvailabilityConfig,
+            root / "configs" / "feature_availability.yaml",
+        ),
     )
     values: dict[str, StrictModel] = {"simulation": load_simulation_config(profile, root)}
     for name, model_type, path in model_paths:

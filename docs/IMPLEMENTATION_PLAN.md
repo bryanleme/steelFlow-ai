@@ -4,7 +4,7 @@
 
 Construir o SteelFlow AI como protótipo offline e reproduzível de apoio à decisão para uma fábrica fictícia de tubos OCTG sem costura. Todo dado será sintético; todos os limites, internos e simulados. O trabalho avança por checkpoints aprovados, sem iniciar a fase seguinte silenciosamente.
 
-**Status:** Fases 0 e 1 implementadas e validadas localmente em 2026-08-18; Fase 2 aguarda aprovação do Checkpoint 1.
+**Status:** Fases 0, 1 e 2 implementadas e validadas localmente em 2026-08-18; Fase 3 aguarda aprovação do Checkpoint 2.
 
 ## Estado inicial auditado em 2026-08-18
 
@@ -101,6 +101,12 @@ Esta é uma estimativa de capacidade anterior à execução, não um benchmark. 
 
 Antes de executar `mvp`, a Fase 2 medirá tempo, memória e tamanho do perfil `dev`, extrapolará por tabela e exigirá espaço livre compatível. Se a máquina não suportar a escala, o pipeline permanecerá escalável e a limitação será registrada sem inventar resultados.
 
+### Refinamento após execução de `dev`
+
+O perfil `dev` produziu 529.014 registros públicos em 19,05 segundos, 30,35 MB de Parquet raw e 0,94 MB de verdade causal isolada. A validação de 83 contratos levou 1,61 segundo. Esses números são medições locais, não garantias para outra máquina.
+
+Uma extrapolação linear por linhas sugere aproximadamente 8–20 minutos e 0,7–1,5 GB de Parquet raw para `mvp`. O pico de memória ainda não foi medido por telemetria externa; pela escrita em lotes de até 100 mil registros, mantém-se uma reserva conservadora de 2–6 GB. O perfil `mvp` não será executado sem nova verificação de espaço e sem necessidade demonstrável.
+
 ## Dependências por camada
 
 - Fundação: Pydantic e PyYAML; pytest/Ruff apenas em desenvolvimento.
@@ -112,4 +118,4 @@ As dependências pesadas ficam em extras para que a fundação seja validável s
 
 ## Sequência imediata após aprovação
 
-Fase 2: fechar contratos de tabelas e sementes, implementar geração particionada `test`, validar reprodutibilidade e integridade, então gerar e medir `dev`. Nenhum modelo, DuckDB analítico ou app será antecipado nessa fase.
+Fase 3: construir o arquivo DuckDB recriável, camadas `raw`/`curated`/`analytics`, SQL legível, catálogo de KPIs, marts por linha × turno e ordem, reconciliações e exports em esquema estrela para Power BI. Nenhum modelo ou app será antecipado nessa fase.
