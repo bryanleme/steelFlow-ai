@@ -1,7 +1,8 @@
 # Importação com Power Query
 
-1. Execute `python -m steelflow build-db --profile dev`.
-2. No Power BI Desktop, crie um parâmetro de texto chamado `SteelFlowExportRoot` apontando para `powerbi/exports/dev/<simulation_run_id>` no clone local.
+1. Execute `python -m steelflow build-db --profile mvp`.
+2. No Power BI Desktop, crie um parâmetro de texto chamado `SteelFlowExportRoot`
+   apontando para `powerbi/exports/mvp/<simulation_run_id>` no clone local.
 3. Crie uma consulta em branco chamada `LoadSteelFlowCsv`, abra o Editor Avançado e cole `powerbi/load_export_csv.pq`.
 4. Para cada arquivo abaixo, crie uma consulta em branco com a expressão indicada e use o nome à esquerda.
 5. Aplique tipos no modelo e configure os relacionamentos de `RELATIONSHIPS.md`.

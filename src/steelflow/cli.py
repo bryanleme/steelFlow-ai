@@ -6,7 +6,9 @@ import argparse
 import importlib.util
 import json
 import logging
+import os
 import platform
+import subprocess
 import sys
 from collections.abc import Sequence
 from pathlib import Path
@@ -27,10 +29,6 @@ from steelflow.reporting.diagnostics import DiagnosticBuildError, build_diagnost
 from steelflow.validation.raw_data import validate_raw_dataset
 
 LOGGER = logging.getLogger("steelflow.cli")
-
-_FUTURE_COMMAND_PHASES = {
-    "app": 7,
-}
 
 
 def _add_profile_argument(parser: argparse.ArgumentParser) -> None:
@@ -132,12 +130,23 @@ def build_parser() -> argparse.ArgumentParser:
         help="Replace only the deterministic optimization run for this exact contract.",
     )
 
-    for command, phase in _FUTURE_COMMAND_PHASES.items():
-        future_parser = subparsers.add_parser(
-            command,
-            help=f"Reserved product command; implementation is planned for Phase {phase}.",
-        )
-        _add_profile_argument(future_parser)
+    app_parser = subparsers.add_parser(
+        "app",
+        help="Launch the five-page Streamlit decision-support application.",
+    )
+    _add_profile_argument(app_parser)
+    app_parser.add_argument("--host", default="127.0.0.1")
+    app_parser.add_argument("--port", type=int, default=8501)
+    app_parser.add_argument(
+        "--headless",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+    )
+    app_parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Validate application artifacts without starting the web server.",
+    )
 
     return parser
 
@@ -357,6 +366,46 @@ def _optimize_demo(profile: str, project_root: Path | None, *, force: bool) -> i
     return 0
 
 
+def _run_app(
+    profile: str,
+    project_root: Path | None,
+    *,
+    host: str,
+    port: int,
+    headless: bool,
+    check_only: bool,
+) -> int:
+    from steelflow.product.artifacts import product_artifact_report
+
+    root = resolve_project_root(project_root)
+    bundle = load_config_bundle(profile, root)
+    report = product_artifact_report(bundle, project_root=root)
+    if check_only:
+        print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        return 0 if report["ready"] else 1
+    if importlib.util.find_spec("streamlit") is None:
+        raise ValueError('Streamlit is not installed; install the project extra ".[app]"')
+    environment = os.environ.copy()
+    environment["STEELFLOW_PROFILE"] = profile
+    command = [
+        sys.executable,
+        "-m",
+        "streamlit",
+        "run",
+        str(root / "app" / "Home.py"),
+        "--server.address",
+        host,
+        "--server.port",
+        str(port),
+        "--server.headless",
+        str(headless).lower(),
+        "--browser.gatherUsageStats",
+        "false",
+    ]
+    completed = subprocess.run(command, cwd=root, env=environment, check=False)
+    return int(completed.returncode)
+
+
 def run(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -386,14 +435,15 @@ def run(argv: Sequence[str] | None = None) -> int:
             return _evaluate_models(args.profile, args.project_root)
         if args.command == "optimize-demo":
             return _optimize_demo(args.profile, args.project_root, force=args.force)
-        if args.command in _FUTURE_COMMAND_PHASES:
-            phase = _FUTURE_COMMAND_PHASES[args.command]
-            print(
-                f"ERROR: command {args.command!r} is reserved for Phase {phase} and is not "
-                "implemented in the current project phase.",
-                file=sys.stderr,
+        if args.command == "app":
+            return _run_app(
+                args.profile,
+                args.project_root,
+                host=args.host,
+                port=args.port,
+                headless=args.headless,
+                check_only=args.check,
             )
-            return 2
     except (
         ConfigError,
         DatabaseBuildError,

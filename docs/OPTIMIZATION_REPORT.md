@@ -77,4 +77,6 @@ Cada contexto publica `current`, `conservative`, `balanced` e `productivity`, co
 - A estimativa de produtividade ainda requer validação externa e teste prospectivo antes de uso real.
 - Compatibilidade dimensional é representada pelo produto congelado, não por uma regra metalúrgica certificada.
 - Parada é invariante aos controles de laminação na versão atual.
-- A interface, confirmação interativa e integração com Power BI pertencem à Fase 7.
+- A Fase 7 integrou cenários à interface com controles contratados, recálculo pelos modelos
+  congelados, confirmação humana e exportação auditável. O Power BI permanece descritivo;
+  risco, OOD e cenários interativos pertencem ao app para preservar a linhagem congelada.

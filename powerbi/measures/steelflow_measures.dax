@@ -83,5 +83,6 @@ DIVIDE (
 )
 
 Next-window Downtime Probability =
-// Intentionally blank until a temporally calibrated Phase 5 model is available.
+// Intentionally blank: the descriptive star has no keyed frozen-prediction fact.
+// Calibrated risk is served from frozen artifacts by the Streamlit product.
 BLANK ()

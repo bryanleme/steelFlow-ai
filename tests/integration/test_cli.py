@@ -6,8 +6,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-import pytest
-
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -84,18 +82,14 @@ def test_config_hash_is_a_sha256_digest() -> None:
     assert set(digest) <= set("0123456789abcdef")
 
 
-@pytest.mark.parametrize(
-    ("command", "phase"),
-    [
-        ("app", 7),
-    ],
-)
-def test_future_commands_fail_explicitly(command: str, phase: int) -> None:
-    result = run_cli(command, "--profile", "test")
+def test_app_check_reports_missing_artifacts_without_starting_server() -> None:
+    result = run_cli("app", "--profile", "test", "--check")
 
-    assert result.returncode == 2
-    assert f"reserved for Phase {phase}" in result.stderr
-    assert "not implemented" in result.stderr
+    assert result.returncode == 1
+    report = json.loads(result.stdout)
+    assert report["ready"] is False
+    assert report["status"] == "ERROR"
+    assert len(report["recovery_commands"]) == 6
 
 
 def test_optimize_demo_requires_frozen_upstream_artifacts() -> None:

@@ -1,0 +1,22 @@
+{
+  "name": "SteelFlow Industrial",
+  "dataColors": [
+    "#31D6C4",
+    "#4CC9F0",
+    "#FFB547",
+    "#FF7849",
+    "#4ADE80",
+    "#8CA5B8",
+    "#FF5F6D",
+    "#7C83FD"
+  ],
+  "background": "#071421",
+  "foreground": "#EFF7FB",
+  "tableAccent": "#31D6C4",
+  "good": "#4ADE80",
+  "neutral": "#8CA5B8",
+  "bad": "#FF5F6D",
+  "maximum": "#31D6C4",
+  "center": "#FFB547",
+  "minimum": "#FF5F6D"
+}

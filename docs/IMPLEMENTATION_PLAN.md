@@ -4,7 +4,8 @@
 
 Construir o SteelFlow AI como protótipo offline e reproduzível de apoio à decisão para uma fábrica fictícia de tubos OCTG sem costura. Todo dado será sintético; todos os limites, internos e simulados. O trabalho avança por checkpoints aprovados, sem iniciar a fase seguinte silenciosamente.
 
-**Status:** Fases 0–6 implementadas e validadas localmente em 2026-08-18; Fase 7 aguarda aprovação do Checkpoint 6.
+**Status:** Fases 0–7 implementadas e validadas localmente em 2026-08-18; Fase 8
+aguarda aprovação do Checkpoint 7.
 
 ## Estado inicial auditado em 2026-08-18
 
@@ -87,14 +88,27 @@ Construir o SteelFlow AI como protótipo offline e reproduzível de apoio à dec
 
 **Evidência executada:** o `mvp` usou somente 11 controles elegíveis, manteve contexto e mediadores fixos e executou 20.160 avaliações NSGA-II. Três envelopes com 627, 778 e 844 linhas de suporte produziram 234 pontos Pareto viáveis. Foram publicados 12 cenários com 100% de aprovação nas nove restrições duras; 3/3 sondas OOD foram recusadas sem recomendação. A validação passou 14/14 checks e duas reconstruções completas repetiram o hash lógico `0bacb0178932…`.
 
-### Fases 7–8
+### Fase 7
 
 1. As cinco páginas funcionam com consultas agregadas e cache consciente.
 2. O app exibe avisos sintéticos e exige aprovação humana explícita.
 3. Ausência de artefatos produz orientação útil, não traceback.
 4. Power BI recebe exports, relacionamentos, Power Query, tema, wireframe e DAX validados como texto/JSON.
 5. `.pbix` só será declarado se realmente criado, aberto e validado.
-6. Screenshots, case e publicações usam apenas resultados gerados rastreáveis.
+6. Screenshots reais usam apenas resultados gerados rastreáveis.
+
+**Evidência executada:** cinco páginas foram abertas com os artefatos `mvp`; o fluxo
+interativo recalculou um cenário com os modelos congelados, passou OOD e restrições,
+exigiu confirmação humana e exportou JSON/CSV. A ausência de artefatos também foi testada
+sem traceback. O pacote Power BI verificou 13 tabelas, 26 arquivos, 24.482.012 bytes e
+todos os checksums, além de tema, DAX, Power Query, relações e wireframe. Nenhum `.pbix`
+foi declarado.
+
+### Fase 8
+
+1. Cards, case, LinkedIn, carrossel e roteiro usam somente números rastreáveis.
+2. Screenshots e demo preservam avisos sintéticos, não causais e sem comando de máquina.
+3. Uma instalação limpa ou equivalente e a auditoria final fecham o aceite.
 
 ## Estimativa preliminar do perfil `mvp`
 
@@ -127,4 +141,5 @@ As dependências pesadas ficam em extras para que a fundação seja validável s
 
 ## Sequência imediata após aprovação
 
-Fase 7: construir as cinco páginas Streamlit, consumir somente os cenários validados, exigir confirmação humana, exportar JSON/CSV e concluir o pacote Power BI verificável sem declarar um `.pbix` inexistente.
+Fase 8: produzir os materiais de portfólio, auditar cada número e afirmação, validar uma
+instalação limpa ou equivalente e registrar pendências reais sem ampliar o escopo técnico.

@@ -22,12 +22,14 @@ O contrato executável está em `analytics.kpi_catalog`. As razões retornam `NU
 | Wall Eccentricity | `AVG(measured_value)` | data × produto × linha | % | `wall_eccentricity_pct` | `quality_results` | `NULL` sem inspeções |
 | Ovality | `AVG(measured_value)` | data × produto × linha | % | `ovality_pct` | `quality_results` | `NULL` sem inspeções |
 | Simulated Mechanical Conformance | `SUM(passed) / COUNT(quality_result_id)` | data × produto × linha | razão | escoamento e tração simulados | `quality_results.passed`, `characteristic` | `NULL` |
-| Next-window Downtime Probability | probabilidade calibrada do modelo | ativo × janela operacional | probabilidade | alvo `next_window_downtime` | `model_outputs.predictions.calibrated_probability` | `NULL` até existir modelo validado |
+| Next-window Downtime Probability | probabilidade calibrada do modelo | ativo × janela operacional | probabilidade | alvo `next_window_downtime` | artefato congelado do modelo/otimização | `NULL` no esquema estrela descritivo; servido pelo app |
 
 ## Regras de agregação
 
 - TBH nunca é calculado como média de TBHs atômicos; soma-se massa boa e horas antes da divisão.
 - FPY, refugo e retrabalho no Power BI são médias ponderadas por `tube_count`.
 - `energy_events` contém três etapas por tubo. O mart de energia remove essa repetição da massa boa antes de calcular kWh/t.
-- A Fase 5 gerou probabilidades calibradas em `data/model_outputs`, mas o mart DuckDB e a medida Power BI permanecem deliberadamente vazios até a integração de produto da Fase 7; nenhuma previsão é fabricada no banco.
+- A Fase 7 consome probabilidades calibradas diretamente dos artefatos congelados no app.
+  O mart DuckDB e a medida Power BI permanecem deliberadamente vazios para não duplicar
+  previsões sem chave de atualização/linhagem; nenhuma probabilidade é fabricada no banco.
 - O valor de 42 t/h é uma referência exclusivamente interna e simulada para o componente Performance; não é capacidade publicada ou validada de equipamento real.

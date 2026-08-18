@@ -51,7 +51,8 @@ A construção falha se a validação raw falhar. Depois do SQL e antes da promo
 
 ## Limitações atuais
 
-- `model_outputs` está vazio até as Fases 5–6; não há previsão de risco nem recomendação nesta fase.
-- O contrato de features está congelado, mas nenhuma transformação ou divisão temporal foi ajustada ainda.
-- O pacote Power BI entrega CSV/Parquet, relações, consultas e DAX como código verificável. Nenhum `.pbix` foi criado ou declarado.
+- `model_outputs` no DuckDB permanece vazio: a Fase 7 lê os artefatos congelados de
+  modelagem/otimização diretamente e evita uma cópia sem chave de atualização.
+- O pacote Power BI entrega CSV/Parquet, relações, consultas, DAX, tema e wireframe como
+  código verificável. Nenhum `.pbix` foi criado ou declarado.
 - Todos os números são medições de uma simulação offline; não expressam ganho, ROI, conformidade ou causalidade industrial real.

@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "phase": 7,
+  "profile": "mvp",
+  "simulation_run_id": "sim-mvp-v0.1.0-740ec922f950",
+  "application": {
+    "framework": "Streamlit 1.61.1",
+    "pages": [
+      "Executive Overview",
+      "Root Cause & Explainability",
+      "Forecast & Risk",
+      "Scenario Lab",
+      "Model Reliability"
+    ],
+    "artifact_check": "PASS",
+    "missing_artifact_experience_tested": true,
+    "duckdb_read_only": true,
+    "scenario_runtime_lazy_loaded": true
+  },
+  "scenario_lab": {
+    "frozen_model_evaluation": "PASS",
+    "ood_guard": "PASS",
+    "hard_constraints": 9,
+    "published_hard_constraint_pass_rate": 1.0,
+    "explicit_human_acknowledgement": true,
+    "json_export_readable": true,
+    "csv_export_readable": true,
+    "machine_command": false
+  },
+  "powerbi": {
+    "status": "PASS",
+    "dimensions": 5,
+    "facts": 8,
+    "tables": 13,
+    "files_verified": 26,
+    "bytes_verified": 24482012,
+    "checksums_verified": true,
+    "theme_valid": true,
+    "wireframe_present": true,
+    "pbix_declared": false
+  },
+  "screenshots": [
+    {
+      "name": "executive-overview.png",
+      "bytes": 368451,
+      "sha256": "d3db8585dc5684837f1625e4e14cc50a0d185a9716dd6a097033af614219eb49"
+    },
+    {
+      "name": "forecast-risk.png",
+      "bytes": 307222,
+      "sha256": "b694b443ba44297d7d56a719423c58507813a18f084dac76b3f3a8ea3527fe6d"
+    },
+    {
+      "name": "model-reliability.png",
+      "bytes": 320762,
+      "sha256": "50a2c71735ead39da8688297a99dc83fc60adf5cce3f7b33ad6026e55a5a2346"
+    },
+    {
+      "name": "root-cause-explainability.png",
+      "bytes": 296384,
+      "sha256": "804b6279655bd8606d9b9b7772ff938775524657f4514a7dc96cc20f3f79e282"
+    },
+    {
+      "name": "scenario-lab.png",
+      "bytes": 311518,
+      "sha256": "434f13a53a8927f3ef671c4f2c4e2427cd3422f3443f785b95b9817045cc771a"
+    }
+  ],
+  "validation": {
+    "status": "PASS",
+    "pytest_passed": 66,
+    "pytest_failed": 0,
+    "third_party_deprecation_warnings": 4,
+    "ruff": "PASS",
+    "streamlit_page_smokes": 5,
+    "visual_page_smokes": 5
+  },
+  "synthetic_scope": "protótipo offline; sem validação API 5CT; sem controle de máquina"
+}

@@ -8,7 +8,8 @@ SteelFlow AI é um *decision-support digital twin* simplificado para uma fábric
 
 ## Estado atual
 
-As Fases 0–6 estabelecem a fundação, o gerador auditável, a camada analítica, o contrato point-in-time, a modelagem temporal e a otimização segura:
+As Fases 0–7 estabelecem a fundação, o gerador auditável, a camada analítica, o
+contrato point-in-time, a modelagem temporal, a otimização segura e o produto:
 
 - configuração YAML tipada e estrita para os perfis `test`, `dev` e `mvp`;
 - CLI instalável com diagnóstico, validação e hash estável das configurações;
@@ -33,19 +34,26 @@ As Fases 0–6 estabelecem a fundação, o gerador auditável, a camada analíti
 - envelopes históricos condicionais, barreira OOD e limites de mudança para 11 controles elegíveis;
 - NSGA-II com seis objetivos, nove restrições duras e quatro cenários comparáveis por contexto;
 - recusa explícita fora da distribuição, incerteza P10/P50/P90 e aprovação humana obrigatória.
+- aplicativo Streamlit responsivo com cinco páginas, consultas DuckDB agregadas e cache;
+- laboratório de cenários com controles contratados, confirmação humana e exportação JSON/CSV;
+- pacote Power BI com 13 tabelas, 26 arquivos verificados, tema, wireframe e checklist.
 
-O perfil `mvp` foi gerado, validado, curado, modelado e otimizado em três contextos demonstrativos. A meta de reduzir em 5% o MAE de TBH não foi atingida: a melhora final foi 0,98%. Os cenários da Fase 6 são estimativas em backtest sintético, não contrafactuais causais nem instruções de operação. Não há controle de máquina.
+O perfil `mvp` foi gerado, validado, curado, modelado, otimizado e integrado ao
+produto em três contextos demonstrativos. A meta de reduzir em 5% o MAE de TBH não
+foi atingida: a melhora final foi 0,98%. Os cenários são estimativas em backtest
+sintético, não contrafactuais causais nem instruções de operação. Não há controle de máquina.
 
 ## Instalação
 
-Python compatível: `>=3.11,<3.15`. As Fases 5–6 foram verificadas no Python 3.14.6 com CatBoost 1.2.10, scikit-learn 1.9.0, SHAP 0.52.0 e pymoo 0.6.2.
+Python compatível: `>=3.11,<3.15`. As Fases 5–7 foram verificadas no Python 3.14.6
+com CatBoost 1.2.10, scikit-learn 1.9.0, SHAP 0.52.0, pymoo 0.6.2 e Streamlit 1.61.1.
 
 ### Windows PowerShell
 
 ```powershell
 python -m venv .venv
 .venv\Scripts\python -m pip install --upgrade pip
-.venv\Scripts\python -m pip install -e ".[data,ml,optimization,dev]"
+.venv\Scripts\python -m pip install -e ".[all]"
 .venv\Scripts\python -m steelflow doctor
 .venv\Scripts\python -m pytest
 ```
@@ -55,7 +63,7 @@ python -m venv .venv
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install --upgrade pip
-.venv/bin/python -m pip install -e ".[data,ml,optimization,dev]"
+.venv/bin/python -m pip install -e ".[all]"
 .venv/bin/python -m steelflow doctor
 .venv/bin/python -m pytest
 ```
@@ -64,7 +72,7 @@ Se `uv` estiver disponível, o bootstrap equivalente é:
 
 ```bash
 uv venv
-uv pip install -e ".[data,ml,optimization,dev]"
+uv pip install -e ".[all]"
 uv run steelflow doctor
 uv run pytest
 ```
@@ -87,6 +95,8 @@ python -m steelflow build-features --profile dev
 python -m steelflow train --profile mvp
 python -m steelflow evaluate --profile mvp
 python -m steelflow optimize-demo --profile mvp
+python -m steelflow app --profile mvp --check
+python -m steelflow app --profile mvp
 python -m pytest
 python -m ruff check .
 ```
@@ -105,9 +115,11 @@ Quando `make` estiver instalado, `make setup`, `make validate-config`, `make doc
 | `make train` | `python -m steelflow train --profile dev` | Implementado |
 | `make evaluate` | `python -m steelflow evaluate --profile dev` | Implementado |
 | `make optimize-demo` | `python -m steelflow optimize-demo --profile mvp` | Implementado |
-| `make app` | `python -m steelflow app --profile dev` | 7 |
+| `make app` | `python -m steelflow app --profile mvp` | Implementado |
 
-O comando de aplicativo permanece reservado para a Fase 7 e retorna código diferente de zero com mensagem explícita.
+`app --check` valida os artefatos sem abrir servidor. `app` inicia as cinco páginas em
+`http://127.0.0.1:8501`; se algum artefato estiver ausente, a tela apresenta os comandos
+de recuperação em vez de um traceback.
 
 ## Perfis
 
@@ -164,7 +176,16 @@ O `mvp` executou 20.160 avaliações NSGA-II em três contextos condicionados po
 
 O surrogate auxiliar de `actual_tph`, avaliado somente na janela de calibração, obteve MAE P50 de 0,619 t/h e cobertura P10–P90 de 80,33%. A proxy de TBH combina essa mediana com a probabilidade calibrada de falha de qualidade. Ela não substitui o modelo TBH da Fase 5 e não possui alegação de desempenho no teste final. Consulte o [relatório de otimização](docs/OPTIMIZATION_REPORT.md) e o [contrato de cenários](docs/SCENARIO_CONTRACT.md).
 
-## Arquitetura implementada até a Fase 6
+## Evidência da Fase 7
+
+As cinco páginas Streamlit foram abertas por smoke test usando o `mvp`. O teste ponta a
+ponta reconstruiu um cenário publicado com os modelos congelados, confirmou 100% das
+restrições, aplicou OOD, exigiu aceite humano e leu os exports JSON/CSV. O pacote Power BI
+validou 5 dimensões, 8 fatos e os SHA-256 dos 26 arquivos, totalizando 24.482.012 bytes.
+Nenhum `.pbix` foi declarado. Consulte o [relatório do produto](docs/PRODUCT_REPORT.md) e
+o [pacote Power BI](powerbi/README.md).
+
+## Arquitetura implementada até a Fase 7
 
 ```text
 Versioned YAML
