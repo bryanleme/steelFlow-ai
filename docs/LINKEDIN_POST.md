@@ -1,45 +1,39 @@
 # Post para LinkedIn
 
-O modelo não bateu a meta.
+Em uma das indústrias onde trabalhei, informação não faltava.
 
-E esse foi um dos resultados mais importantes do projeto.
+O problema aparecia quando os defeitos começavam.
 
-Construí o **SteelFlow AI** para testar uma ideia simples:
+Os parâmetros eram ajustados na tentativa e erro: mudava-se uma variável, observava-se o resultado e tentava-se novamente.
 
-> Um sistema de apoio à decisão também precisa saber quando não deve recomendar.
+Havia experiência de processo. Havia dados. Mas não havia um ambiente para testar hipóteses de parâmetros e estimar o comportamento provável da máquina antes do próximo ajuste.
 
-Na prática, ele faz três coisas:
+Foi dessa lacuna que nasceu o **SteelFlow AI**.
 
-1. **Prevê** resultados e mostra uma faixa de incerteza.
-2. **Explica** quais fatores influenciaram a estimativa.
-3. **Recusa** cenários fora dos limites conhecidos.
+A proposta é simples:
 
-O teste mais importante foi direto:
+1. combinar diferentes parâmetros de processo;
+2. calcular cenários “e se?”;
+3. estimar probabilidades e faixas de resultado;
+4. comparar alternativas antes da decisão humana.
 
-- meta de melhoria do TBH: **5%** <!-- [claim:TBH_ENGINEERING_TARGET] -->;
-- resultado estimado: **0,98%** <!-- [claim:TBH_RELATIVE_IMPROVEMENT] -->.
+Para cada hipótese, o sistema mostra risco estimado de falha de qualidade, FPY, produtividade e energia com faixas P10/P50/P90. Se a combinação sair do comportamento histórico ou violar uma restrição, o cenário é recusado.
 
-A meta não foi atingida — e o produto deixa isso visível.
+No MVP, foram avaliadas **20.160 combinações**. O produto publicou **12 cenários** <!-- [claim:PUBLISHED_SCENARIOS] --> que passaram por **9 restrições** <!-- [claim:HARD_CONSTRAINTS] --> e organizou a análise em **5 páginas** <!-- [claim:STREAMLIT_PAGES] -->.
 
-Por trás dessa experiência existem **12.594.517** registros públicos
-<!-- [claim:MVP_PUBLIC_ROWS] -->, **12 cenários**
-<!-- [claim:PUBLISHED_SCENARIOS] --> aprovados pelas **9 restrições**
-<!-- [claim:HARD_CONSTRAINTS] --> e **5 páginas**
-<!-- [claim:STREAMLIT_PAGES] --> que conduzem da análise à revisão da decisão.
+A base possui **12.594.517** registros públicos sintéticos <!-- [claim:MVP_PUBLIC_ROWS] -->.
 
-O ponto não é apenas ter um modelo.
+E nem todo resultado foi positivo: a meta de melhoria do modelo de TBH era **5%** <!-- [claim:TBH_ENGINEERING_TARGET] -->, mas o resultado foi **0,98%** <!-- [claim:TBH_RELATIVE_IMPROVEMENT] -->. Mantive isso visível porque transparência também faz parte de um sistema de decisão.
 
-É combinar previsão, contexto, limites e responsabilidade humana no mesmo fluxo.
+O objetivo não é substituir o conhecimento de processo.
 
-Escopo importante: o conjunto é **100% sintético**, o protótipo funciona offline e está
-**sem controle de máquina**. O trabalho **não demonstra causalidade industrial**, não
-valida API 5CT e não promete ganho real de produção.
+É trocar o “vamos tentar e ver o que acontece” por hipóteses comparáveis, incerteza explícita e revisão humana.
 
-Se você trabalha com dados, ML ou manufatura, quero saber:
+Escopo importante: o protótipo é offline e **100% sintético**, está **sem controle de máquina** e **não demonstra causalidade industrial**. As saídas são estimativas de modelos, não receitas operacionais.
 
-**o que um sistema precisa mostrar para conquistar sua confiança antes de recomendar uma decisão?**
+Na sua experiência, quantos ajustes de processo ainda são feitos na tentativa e erro porque os dados não foram transformados em um ambiente de teste?
 
 Projeto, código e evidências:
 https://github.com/bryanleme/steelFlow-ai
 
-#DataEngineering #MachineLearning #MLOps #Manufacturing #DataScience
+#DataEngineering #MachineLearning #Manufacturing #IndustrialAI #DataScience
