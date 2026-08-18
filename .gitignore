@@ -5,6 +5,7 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .cache/
+*.inspect.ndjson
 catboost_info/
 .coverage
 htmlcov/
@@ -13,7 +14,22 @@ venv/
 
 # Local configuration and secrets
 .env
+.env.*
+!.env.example
 *.local.yaml
+*.local.yml
+*.local.json
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.kdbx
+credentials*.json
+secrets*.json
+secrets*.yaml
+secrets*.yml
 
 # Generated data, databases, models and caches
 data/raw/

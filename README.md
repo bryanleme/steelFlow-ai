@@ -102,6 +102,7 @@ python -m steelflow optimize-demo --profile mvp
 python -m steelflow app --profile mvp --check
 python -m steelflow app --profile mvp
 python -m steelflow audit-portfolio
+powershell -ExecutionPolicy Bypass -File scripts/security_audit.ps1 -History
 python -m pytest
 python -m ruff check .
 ```
@@ -194,13 +195,19 @@ o [pacote Power BI](powerbi/README.md).
 ## Entrega de portfólio da Fase 8
 
 O [estudo de caso](docs/CASE_STUDY.md), o [post](docs/LINKEDIN_POST.md), o
-[carrossel](docs/LINKEDIN_CAROUSEL.md) e o [roteiro de demonstração](docs/DEMO_SCRIPT.md)
-usam somente números ligados a evidências versionadas. `audit-portfolio` verifica os
+[carrossel editável](docs/LINKEDIN_CAROUSEL.md), a
+[apresentação pronta](docs/SteelFlow_AI_LinkedIn_Carousel.pptx), o
+[guia de publicação](docs/LINKEDIN_PUBLICATION_GUIDE.md) e o
+[roteiro de demonstração](docs/DEMO_SCRIPT.md) usam somente números ligados a evidências
+versionadas. `audit-portfolio` verifica os
 ponteiros JSON, a representação publicada, os avisos obrigatórios e expressões proibidas.
 A [auditoria causal](docs/CAUSAL_GROUND_TRUTH_AUDIT.md) documenta por que a recuperação
 sintética posterior não equivale a causalidade industrial.
 O [relatório final de aceite](docs/FINAL_ACCEPTANCE_REPORT.md) reúne a evidência dos 17
 critérios e todas as limitações que permanecem abertas.
+A [revisão de segurança](docs/SECURITY_REVIEW.md) registra a varredura do conteúdo e do
+histórico, a remoção do e-mail pessoal dos commits e o comando preventivo para futuras
+publicações.
 
 ## Arquitetura implementada até a Fase 8
 

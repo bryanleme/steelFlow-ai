@@ -1,5 +1,7 @@
 # Carrossel LinkedIn — SteelFlow AI
 
+Arquivo final para envio: `SteelFlow_AI_LinkedIn_Carousel.pptx`.
+
 Formato sugerido: 1080 × 1350 px, dez slides, leitura curta e um único argumento por
 tela. As notas de fonte podem ficar pequenas no rodapé.
 

@@ -1,5 +1,7 @@
 # Post para LinkedIn
 
+O melhor resultado deste projeto foi o que ele se recusou a maquiar.
+
 Na manufatura, dados podem ser abundantes e a decisão continuar retrospectiva. Mix,
 desgaste e parâmetros interagem, tornando uma média agregada perigosamente convincente.
 
